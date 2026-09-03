@@ -30,6 +30,8 @@ export function useAutoplayProgress(durationMs: number, enabled: boolean): Autop
     frameRef.current = window.requestAnimationFrame(tick);
     return () => {
       if (frameRef.current !== null) window.cancelAnimationFrame(frameRef.current);
+      frameRef.current = null;
+      startRef.current = null;
     };
   }, [enabled, durationMs]);
 

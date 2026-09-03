@@ -1,14 +1,18 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useConnectionType } from "@/hooks/useConnectionType";
 import { useFramePreloader } from "@/hooks/useFramePreloader";
 import { useAutoplayProgress } from "@/hooks/useAutoplayProgress";
+import { useHasMounted } from "@/hooks/useHasMounted";
 import { shouldShowHeroFallback } from "@/lib/device";
 import { computeFrameBlend } from "@/lib/hero-frames";
 import type { ClientHero } from "@/config/types";
 
 export const TITLE_REVEAL_PROGRESS = 0.75;
 export const DEFAULT_AUTOPLAY_DURATION_MS = 6000;
+
+type IntroDecision = "pending" | "play" | "fallback";
 
 export interface HeroIntroState {
   currentImage: HTMLImageElement | undefined;
@@ -22,22 +26,34 @@ export interface HeroIntroState {
 }
 
 export function useHeroIntro(hero: ClientHero): HeroIntroState {
+  const hasMounted = useHasMounted();
   const isMobile = useMediaQuery("(max-width: 767px)");
   const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const effectiveType = useConnectionType();
 
-  const showFallback =
+  const shouldFallbackNow =
     hero.mode === "static-image" ||
     shouldShowHeroFallback(prefersReducedMotion, effectiveType ? { effectiveType } : undefined);
 
+  // Decide once, after mount (when reduced-motion and connection have been
+  // read), and never flip: a mid-intro network change must not restart the
+  // preload or swap the sequence for the static image.
+  const [decision, setDecision] = useState<IntroDecision>("pending");
+  useEffect(() => {
+    if (!hasMounted || decision !== "pending") return;
+    setDecision(shouldFallbackNow ? "fallback" : "play");
+  }, [hasMounted, decision, shouldFallbackNow]);
+
+  const showFallback = decision === "fallback";
+
   const { images, progress: preloadProgress, isComplete } = useFramePreloader(
     hero.framesPath,
-    showFallback ? 0 : hero.frameCount
+    decision === "play" ? hero.frameCount : 0
   );
 
   const { progress: autoplayProgress, complete } = useAutoplayProgress(
     hero.autoplayDurationMs ?? DEFAULT_AUTOPLAY_DURATION_MS,
-    !showFallback && isComplete
+    decision === "play" && isComplete
   );
 
   const introProgress = showFallback ? 1 : autoplayProgress;
@@ -47,7 +63,7 @@ export function useHeroIntro(hero: ClientHero): HeroIntroState {
     currentImage: images[index],
     nextImage: images[nextIndex],
     blend,
-    preloadProgress: showFallback ? 1 : preloadProgress,
+    preloadProgress: decision === "play" ? preloadProgress : 1,
     showFallback,
     introProgress,
     isTitleVisible: introProgress >= TITLE_REVEAL_PROGRESS,
