@@ -47,6 +47,14 @@ export function HeroFrameSequence({ brand, hero }: HeroFrameSequenceProps) {
         aria-hidden={!intro.isTitleVisible}
         className={`absolute inset-0 flex flex-col items-center justify-center px-6 text-center transition-all duration-700 ease-out ${revealClasses}`}
       >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 -z-10"
+          style={{
+            background:
+              "radial-gradient(ellipse 75% 60% at 50% 50%, rgb(var(--bg-dark-rgb) / 0.75) 0%, rgb(var(--bg-dark-rgb) / 0.4) 45%, transparent 78%)",
+          }}
+        />
         <p className="mb-4 font-body text-xs uppercase tracking-[0.3em] text-brassLight">
           {brand.creci}
         </p>
