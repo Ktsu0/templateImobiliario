@@ -19,12 +19,16 @@ function getConnection(): NetworkInformation | undefined {
 }
 
 export function useConnectionType(): EffectiveConnectionType | undefined {
+  // Always start at undefined so the client's first render matches the
+  // server-rendered HTML (navigator.connection isn't available during SSR)
+  // — the real value is resolved in the effect below, after hydration.
   const [effectiveType, setEffectiveType] = useState<EffectiveConnectionType | undefined>(
-    () => getConnection()?.effectiveType
+    undefined
   );
 
   useEffect(() => {
     const connection = getConnection();
+    setEffectiveType(connection?.effectiveType);
     if (!connection?.addEventListener) return;
     const handleChange = () => setEffectiveType(connection.effectiveType);
     connection.addEventListener("change", handleChange);
