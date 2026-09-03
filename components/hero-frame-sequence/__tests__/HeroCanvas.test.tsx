@@ -1,19 +1,26 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { HeroCanvas } from "@/components/hero-frame-sequence/HeroCanvas";
+
+const baseProps = {
+  currentImage: undefined,
+  nextImage: undefined,
+  blend: 0,
+  introProgress: 0,
+  showFallback: false,
+  fallbackImage: "/fallback.webp",
+  brandName: "Pioneira Imóveis",
+  onSkip: () => {},
+};
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe("HeroCanvas", () => {
   it("renders the fallback image and an always-visible skip button", () => {
     const onSkip = vi.fn();
-    render(
-      <HeroCanvas
-        currentImage={undefined}
-        showFallback={true}
-        fallbackImage="/fallback.webp"
-        brandName="Pioneira Imóveis"
-        onSkip={onSkip}
-      />
-    );
+    render(<HeroCanvas {...baseProps} showFallback={true} onSkip={onSkip} />);
 
     expect(screen.getByRole("img", { name: /pioneira imóveis/i })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /pular introdução/i }));
@@ -21,15 +28,28 @@ describe("HeroCanvas", () => {
   });
 
   it("renders a canvas element when not showing the fallback", () => {
-    const { container } = render(
-      <HeroCanvas
-        currentImage={undefined}
-        showFallback={false}
-        fallbackImage="/fallback.webp"
-        brandName="Pioneira Imóveis"
-        onSkip={() => {}}
-      />
-    );
+    const { container } = render(<HeroCanvas {...baseProps} />);
     expect(container.querySelector("canvas")).not.toBeNull();
+  });
+
+  it("crossfades by drawing the current frame and the next frame at the blend alpha", () => {
+    const context = { drawImage: vi.fn(), globalAlpha: 1 };
+    vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(
+      context as unknown as CanvasRenderingContext2D
+    );
+    const currentImage = new Image();
+    const nextImage = new Image();
+
+    render(<HeroCanvas {...baseProps} currentImage={currentImage} nextImage={nextImage} blend={0.4} />);
+
+    expect(context.drawImage).toHaveBeenCalledTimes(2);
+    expect(context.drawImage.mock.calls[0][0]).toBe(currentImage);
+    expect(context.drawImage.mock.calls[1][0]).toBe(nextImage);
+  });
+
+  it("scales the frame up as the intro progresses", () => {
+    const { container } = render(<HeroCanvas {...baseProps} introProgress={1} />);
+    const scaled = container.querySelector("[data-testid='hero-zoom']") as HTMLElement;
+    expect(scaled.style.transform).toBe("scale(1.06)");
   });
 });

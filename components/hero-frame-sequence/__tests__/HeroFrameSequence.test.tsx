@@ -2,15 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import type { ClientBrand, ClientHero } from "@/config/types";
 
-vi.mock("@/components/hero-frame-sequence/useScrollFrames", () => ({
-  useScrollFrames: vi.fn(() => ({
-    frameIndex: 0,
-    currentImage: undefined,
-    preloadProgress: 1,
-    showFallback: false,
-  })),
+vi.mock("@/components/hero-frame-sequence/useHeroIntro", () => ({
+  useHeroIntro: vi.fn(),
 }));
 
+import { useHeroIntro } from "@/components/hero-frame-sequence/useHeroIntro";
 import { HeroFrameSequence } from "@/components/hero-frame-sequence/HeroFrameSequence";
 
 const brand: ClientBrand = {
@@ -28,21 +24,53 @@ const hero: ClientHero = {
   phases: [],
 };
 
+const skipIntro = vi.fn();
+
+function mockIntro(overrides: Partial<ReturnType<typeof useHeroIntro>> = {}) {
+  vi.mocked(useHeroIntro).mockReturnValue({
+    currentImage: undefined,
+    nextImage: undefined,
+    blend: 0,
+    preloadProgress: 1,
+    showFallback: false,
+    introProgress: 0,
+    isTitleVisible: false,
+    skipIntro,
+    ...overrides,
+  });
+}
+
 beforeEach(() => {
+  skipIntro.mockClear();
   Element.prototype.scrollIntoView = vi.fn();
   document.body.innerHTML = '<div id="imoveis"></div>';
+  mockIntro();
 });
 
 describe("HeroFrameSequence", () => {
-  it("renders the brand name and slogan", () => {
+  it("keeps the title hidden until the intro reveals it", () => {
     render(<HeroFrameSequence brand={brand} hero={hero} />);
-    expect(screen.getByText(brand.name)).toBeInTheDocument();
-    expect(screen.getByText(brand.slogan)).toBeInTheDocument();
+    expect(screen.getByTestId("hero-title")).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByTestId("hero-title")).toHaveClass("opacity-0");
   });
 
-  it("scrolls the properties section into view when skip is clicked", () => {
+  it("shows the brand name, slogan, and CTA once revealed", () => {
+    mockIntro({ isTitleVisible: true, introProgress: 0.9 });
+    render(<HeroFrameSequence brand={brand} hero={hero} />);
+    const title = screen.getByTestId("hero-title");
+    expect(title).toHaveAttribute("aria-hidden", "false");
+    expect(title).toHaveClass("opacity-100");
+    expect(screen.getByText(brand.name)).toBeInTheDocument();
+    expect(screen.getByText(brand.slogan)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /ver imóveis/i }));
+    expect(document.getElementById("imoveis")?.scrollIntoView).toHaveBeenCalledOnce();
+  });
+
+  it("skip completes the intro and scrolls to the properties section", () => {
     render(<HeroFrameSequence brand={brand} hero={hero} />);
     fireEvent.click(screen.getByRole("button", { name: /pular introdução/i }));
+    expect(skipIntro).toHaveBeenCalledOnce();
     expect(document.getElementById("imoveis")?.scrollIntoView).toHaveBeenCalledOnce();
   });
 });

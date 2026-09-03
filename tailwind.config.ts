@@ -5,17 +5,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bgDark: "var(--bg-dark)",
-        ivory: "var(--ivory)",
-        sand: "var(--sand)",
-        brass: "var(--brass)",
-        brassLight: "var(--brass-light)",
-        ink: "var(--ink)",
-        inkSoft: "var(--ink-soft)",
+        bgDark: "rgb(var(--bg-dark-rgb) / <alpha-value>)",
+        ivory: "rgb(var(--ivory-rgb) / <alpha-value>)",
+        sand: "rgb(var(--sand-rgb) / <alpha-value>)",
+        brass: "rgb(var(--brass-rgb) / <alpha-value>)",
+        brassLight: "rgb(var(--brass-light-rgb) / <alpha-value>)",
+        ink: "rgb(var(--ink-rgb) / <alpha-value>)",
+        inkSoft: "rgb(var(--ink-soft-rgb) / <alpha-value>)",
       },
       fontFamily: {
-        display: ["var(--font-display)"],
-        body: ["var(--font-body)"],
+        display: ["var(--font-display)", "Georgia", "serif"],
+        body: ["var(--font-body)", "system-ui", "sans-serif"],
       },
     },
   },

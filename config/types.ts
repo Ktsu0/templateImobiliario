@@ -28,6 +28,7 @@ export interface ClientHero {
   frameCount: number;
   fallbackImage: string;
   phases: HeroPhase[];
+  autoplayDurationMs?: number;
 }
 
 export interface ClientContact {

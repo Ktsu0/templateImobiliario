@@ -11,3 +11,5 @@
   OpenStreetMap), caso um cliente futuro pague por isso
 - Sessão de fotos maior com fases extras no hero (ex: "abrir a porta e entrar"), para
   clientes que topam pagar por uma captação mais longa
+- Reduzir o preload do hero em mobile: hoje carrega os 90 frames e exibe 45; carregar só
+  os frames amostrados cortaria o peso pela metade

@@ -25,6 +25,7 @@ export const clientConfig = {
     frameCount: 90,
     fallbackImage: "/clients/pioneira/hero-fallback.webp",
     phases: [{ label: "Aproximação", scrollRange: [0, 1.0] }],
+    autoplayDurationMs: 6000,
   },
   contact: {
     whatsapp: "5541999999999",
