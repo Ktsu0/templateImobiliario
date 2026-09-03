@@ -24,10 +24,7 @@ export const clientConfig = {
     framesPath: "/clients/pioneira/hero-frames/",
     frameCount: 90,
     fallbackImage: "/clients/pioneira/hero-fallback.webp",
-    phases: [
-      { label: "Vista aérea", scrollRange: [0, 0.5] },
-      { label: "Fachada", scrollRange: [0.5, 1.0] },
-    ],
+    phases: [{ label: "Aproximação", scrollRange: [0, 1.0] }],
   },
   contact: {
     whatsapp: "5541999999999",
