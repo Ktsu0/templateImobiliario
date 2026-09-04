@@ -13,7 +13,7 @@ export function FloatingFilterBar({ propertyTypes }: FloatingFilterBarProps) {
   const setFilter = useFilterStore((state) => state.setFilter);
 
   return (
-    <div className="sticky top-4 z-30 mx-auto hidden w-fit flex-wrap items-center gap-2 rounded-full bg-ink/90 px-4 py-2 shadow-lg shadow-black/30 ring-1 ring-ivory/10 backdrop-blur md:flex">
+    <div className="sticky top-4 z-30 mx-auto hidden w-fit max-w-full flex-wrap items-center justify-center gap-2 rounded-3xl bg-ink/90 px-4 py-2 shadow-lg shadow-black/30 ring-1 ring-ivory/10 backdrop-blur md:flex">
       <select
         aria-label="Transação"
         value={filters.transaction}
