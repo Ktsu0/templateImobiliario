@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Native UI (scrollbars, select dropdowns, date pickers) renders dark instead
+   of the browser's default white, which was showing up as bright strips over
+   the dark theme. */
+:root {
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
 }
@@ -9,6 +16,39 @@ body {
 :focus-visible {
   outline: 2px solid var(--brass, #B08D57);
   outline-offset: 2px;
+}
+
+/* Scrollbars: present enough to grab, never a white bar on the dark UI.
+   Neutral alpha values so any client theme keeps working. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* The dropdown list of a <select> is drawn by the OS; these are the only
+   properties it honours, and they keep it on the client's palette. */
+select option {
+  background-color: var(--ink, #1f2420);
+  color: var(--ivory, #f6f1e7);
 }
 
 @media (prefers-reduced-motion: reduce) {

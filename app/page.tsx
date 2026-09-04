@@ -13,7 +13,7 @@ export default function HomePage() {
       <HeroFrameSequence brand={brand} hero={hero} />
 
       {journey && (
-        <JourneySection journey={journey} properties={properties} brand={brand} />
+        <JourneySection journey={journey} brand={brand} />
       )}
 
       <section id="imoveis" className="mx-auto max-w-6xl px-6 py-20 md:py-24">

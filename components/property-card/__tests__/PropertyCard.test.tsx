@@ -38,8 +38,33 @@ describe("PropertyCard", () => {
     expect(screen.getByRole("heading", { level: 3, name: "Casa Contemporânea Bigorrilho" })).toBeInTheDocument();
     expect(screen.getByText("Exclusivo")).toBeInTheDocument();
     expect(screen.getByText("R$ 1.450.000,00")).toBeInTheDocument();
-    expect(screen.getByText("4")).toBeInTheDocument();
+    expect(screen.getByText("4 quartos")).toBeInTheDocument();
+    expect(screen.getByText("2 suítes")).toBeInTheDocument();
     expect(screen.getByText("320 m²")).toBeInTheDocument();
+    expect(screen.getByText("3 vagas")).toBeInTheDocument();
+  });
+
+  it("opens the details dialog when the card is clicked, and closes on Escape", () => {
+    render(<PropertyCard property={property} variant="default" whatsappNumber="5541999999999" />);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /ver detalhes de casa contemporânea/i }));
+
+    const dialog = screen.getByRole("dialog", { name: property.title });
+    expect(dialog).toBeInTheDocument();
+    // The dialog carries the bigger photo and its own CTA.
+    expect(screen.getByRole("link", { name: /falar no whatsapp/i })).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("keeps the favorite control from opening the dialog", () => {
+    render(<PropertyCard property={property} variant="default" whatsappNumber="5541999999999" />);
+    fireEvent.click(screen.getByRole("button", { name: /adicionar aos favoritos/i }));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(useFavoritesStore.getState().isFavorite("p1")).toBe(true);
   });
 
   it("links the WhatsApp CTA to the correct wa.me URL", () => {

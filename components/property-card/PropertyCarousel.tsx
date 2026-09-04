@@ -5,13 +5,28 @@ import Image from "next/image";
 interface PropertyCarouselProps {
   photos: string[];
   alt: string;
+  sizes?: string;
+  /** Cards reveal the arrows on hover; the modal keeps them visible. */
+  alwaysShowControls?: boolean;
+  /** The modal opens on demand — its photo should not wait on lazy loading. */
+  priority?: boolean;
 }
 
 const SWIPE_THRESHOLD_PX = 40;
 
-export function PropertyCarousel({ photos, alt }: PropertyCarouselProps) {
+export function PropertyCarousel({
+  photos,
+  alt,
+  sizes = "(max-width: 768px) 100vw, 33vw",
+  alwaysShowControls = false,
+  priority = false,
+}: PropertyCarouselProps) {
   const [index, setIndex] = useState(0);
   const touchStartX = useRef<number | null>(null);
+
+  const arrowClass = `absolute top-1/2 z-20 -translate-y-1/2 rounded-full bg-bgDark/60 px-2.5 py-1 text-lg leading-none text-ivory backdrop-blur transition-opacity focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brass group-hover:opacity-100 ${
+    alwaysShowControls ? "opacity-100" : "opacity-0"
+  }`;
 
   const goTo = (nextIndex: number) => {
     setIndex(((nextIndex % photos.length) + photos.length) % photos.length);
@@ -40,7 +55,8 @@ export function PropertyCarousel({ photos, alt }: PropertyCarouselProps) {
         src={photos[index]}
         alt={alt}
         fill
-        sizes="(max-width: 768px) 100vw, 33vw"
+        sizes={sizes}
+        priority={priority}
         className="object-cover"
       />
 
@@ -48,7 +64,7 @@ export function PropertyCarousel({ photos, alt }: PropertyCarouselProps) {
         type="button"
         onClick={() => goTo(index - 1)}
         aria-label="Foto anterior"
-        className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 px-2 py-0.5 text-lg leading-none text-ivory opacity-0 transition-opacity focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brass group-hover:opacity-100"
+        className={`left-2 ${arrowClass}`}
       >
         ‹
       </button>
@@ -56,12 +72,12 @@ export function PropertyCarousel({ photos, alt }: PropertyCarouselProps) {
         type="button"
         onClick={() => goTo(index + 1)}
         aria-label="Próxima foto"
-        className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 px-2 py-0.5 text-lg leading-none text-ivory opacity-0 transition-opacity focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brass group-hover:opacity-100"
+        className={`right-2 ${arrowClass}`}
       >
         ›
       </button>
 
-      <div className="absolute bottom-2 left-1/2 z-10 flex -translate-x-1/2 gap-1">
+      <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1">
         {photos.map((_, photoIndex) => (
           <span
             key={photoIndex}

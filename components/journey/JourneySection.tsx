@@ -9,17 +9,13 @@ import type { Property } from "@/lib/content/types";
 
 interface JourneySectionProps {
   journey: ClientJourney;
-  properties: Property[];
   brand: ClientBrand;
 }
 
-const PREVIEW_PROPERTY_COUNT = 3;
-
-export function JourneySection({ journey, properties, brand }: JourneySectionProps) {
+export function JourneySection({ journey, brand }: JourneySectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const state = useJourneyScroll(sectionRef, journey);
 
-  const previewProperties = properties.slice(0, PREVIEW_PROPERTY_COUNT);
   const screenCenterX = journey.screenRect.x + journey.screenRect.width / 2;
   const screenCenterY = journey.screenRect.y + journey.screenRect.height / 2;
 
@@ -101,11 +97,7 @@ export function JourneySection({ journey, properties, brand }: JourneySectionPro
                 containerType: "inline-size",
               }}
             >
-              <JourneyScreenPreview
-                properties={previewProperties}
-                brand={brand}
-                welcome={journey.screenWelcome}
-              />
+              <JourneyScreenPreview brand={brand} welcome={journey.screenWelcome} />
             </div>
           </div>
         </div>

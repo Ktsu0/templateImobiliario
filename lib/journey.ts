@@ -23,6 +23,11 @@ const DEFAULT_PREVIEW_FADE_START = 0.2;
 // Fraction of the walk over which the entry veil lifts.
 const ENTRY_FADE_SPAN = 0.22;
 
+// The veil only tints the opening frames toward the brand dark — it never
+// blacks them out, so the interior is already on screen when the section
+// arrives instead of fading in from nothing.
+const ENTRY_VEIL_MAX = 0.5;
+
 function clamp01(value: number): number {
   return Math.min(Math.max(value, 0), 1);
 }
@@ -51,7 +56,7 @@ export function computeJourneyStage(
   const previewOpacity =
     fadeSpan <= 0 ? (zoomRaw >= 1 ? 1 : 0) : clamp01((zoomRaw - fadeStart) / fadeSpan);
 
-  const entryVeil = clamp01(1 - walkProgress / ENTRY_FADE_SPAN);
+  const entryVeil = ENTRY_VEIL_MAX * clamp01(1 - walkProgress / ENTRY_FADE_SPAN);
 
   return { walkProgress, zoomProgress, scale, previewOpacity, entryVeil };
 }

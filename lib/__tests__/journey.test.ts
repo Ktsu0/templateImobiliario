@@ -63,11 +63,17 @@ describe("computeJourneyStage", () => {
     expect(stage.previewOpacity).toBe(0);
   });
 
-  it("starts fully veiled and lifts the veil within the first steps of the walk", () => {
-    expect(computeJourneyStage(0, config).entryVeil).toBe(1);
+  it("tints the opening frames without ever blacking them out", () => {
+    // A full veil would make the interior fade in from nothing; it only dips
+    // the first frames toward the brand dark so the hero blends into them.
+    const atStart = computeJourneyStage(0, config).entryVeil;
+    expect(atStart).toBeGreaterThan(0);
+    expect(atStart).toBeLessThanOrEqual(0.5);
+
     const early = computeJourneyStage(0.07, config).entryVeil; // walk ≈ 0.1
     expect(early).toBeGreaterThan(0);
-    expect(early).toBeLessThan(1);
+    expect(early).toBeLessThan(atStart);
+
     expect(computeJourneyStage(0.2, config).entryVeil).toBe(0); // walk ≈ 0.29
     expect(computeJourneyStage(1, config).entryVeil).toBe(0);
   });

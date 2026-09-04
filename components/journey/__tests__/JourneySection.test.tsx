@@ -123,16 +123,17 @@ describe("JourneySection", () => {
     expect(screen.getByTestId("journey-headline").style.opacity).toBe("0");
   });
 
-  it("puts the logo, the welcome line, three offers and a scroll cue on the screen", () => {
+  it("puts the brand and a scroll cue on the screen, and no photos", () => {
     mockScroll({ previewOpacity: 1 });
-    renderSection();
+    const { container } = renderSection();
+    const laptopScreen = screen.getByTestId("journey-screen");
 
-    expect(screen.getByRole("img", { name: brand.name })).toHaveAttribute("src", brand.logoUrl);
+    expect(laptopScreen.querySelector("img")).toHaveAttribute("src", brand.logoUrl);
+    expect(screen.getByText(brand.name)).toBeInTheDocument();
     expect(screen.getByText(journey.screenWelcome)).toBeInTheDocument();
-    expect(screen.getByText("Casa Um")).toBeInTheDocument();
-    expect(screen.getByText("Casa Três")).toBeInTheDocument();
-    expect(screen.queryByText("Casa Quatro")).not.toBeInTheDocument();
-    expect(screen.getByText(/role para ver todos/i)).toBeInTheDocument();
+    expect(screen.getByText(/role para ver os imóveis/i)).toBeInTheDocument();
+    // Property photos here would be upscaled frames of the footage itself.
+    expect(container.querySelectorAll("img")).toHaveLength(1);
   });
 
   it("drops the scroll-jacking entirely when falling back", () => {

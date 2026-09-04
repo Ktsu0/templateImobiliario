@@ -22,7 +22,9 @@ export function PropertyGrid({ properties, whatsappNumber }: PropertyGridProps) 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
       {featured && (
-        <div className="md:row-span-2">
+        // Wide rather than tall: spanning two rows stretched the card into a
+        // column far longer than its content.
+        <div className="md:col-span-2">
           <PropertyCard property={featured} variant="featured" whatsappNumber={whatsappNumber} />
         </div>
       )}
