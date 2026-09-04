@@ -76,15 +76,24 @@ describe("useHeroIntro", () => {
     rerender();
 
     expect(result.current.showFallback).toBe(false);
-    expect(useFramePreloader).toHaveBeenLastCalledWith("/frames/", 90);
+    expect(useFramePreloader).toHaveBeenLastCalledWith("/frames/", 90, 1);
   });
 
-  it("blends between adjacent frames mid-intro and keeps the title hidden", () => {
+  it("asks the preloader to skip every other frame on mobile", () => {
+    vi.mocked(useMediaQuery).mockImplementation((query: string) =>
+      query.includes("max-width") ? true : false
+    );
+    renderHook(() => useHeroIntro(hero));
+    expect(useFramePreloader).toHaveBeenLastCalledWith("/frames/", 90, 2);
+  });
+
+  it("holds a single sharp frame mid-intro and keeps the title hidden", () => {
     vi.mocked(useAutoplayProgress).mockReturnValue({ progress: 0.5, complete });
     const { result } = renderHook(() => useHeroIntro(hero));
     expect(result.current.currentImage).toBe(images[44]);
-    expect(result.current.nextImage).toBe(images[45]);
-    expect(result.current.blend).toBeCloseTo(0.5);
+    // No cross-fade on desktop: superimposing two frames of a moving camera
+    // was costing real edge detail.
+    expect(result.current.blend).toBe(0);
     expect(result.current.isTitleVisible).toBe(false);
   });
 

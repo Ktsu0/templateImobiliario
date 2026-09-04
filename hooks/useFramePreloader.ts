@@ -8,9 +8,22 @@ interface FramePreloaderState {
   isComplete: boolean;
 }
 
-export function useFramePreloader(framesPath: string, frameCount: number): FramePreloaderState {
+/**
+ * Fetches the frame sequence. `step` skips the frames the player will never
+ * show — mobile samples every other frame, so it should download half the
+ * bytes rather than the whole sequence. Images are stored at their real index
+ * so callers can keep indexing by frame number.
+ */
+export function useFramePreloader(
+  framesPath: string,
+  frameCount: number,
+  step = 1
+): FramePreloaderState {
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [loadedCount, setLoadedCount] = useState(0);
+
+  const safeStep = Math.max(1, Math.floor(step));
+  const expected = frameCount <= 0 ? 0 : Math.ceil(frameCount / safeStep);
 
   useEffect(() => {
     let cancelled = false;
@@ -18,7 +31,7 @@ export function useFramePreloader(framesPath: string, frameCount: number): Frame
     setImages([]);
     setLoadedCount(0);
 
-    for (let i = 0; i < frameCount; i++) {
+    for (let i = 0; i < frameCount; i += safeStep) {
       const img = new Image();
       const frameNumber = String(i + 1).padStart(3, "0");
       img.src = `${framesPath}frame-${frameNumber}.webp`;
@@ -34,14 +47,14 @@ export function useFramePreloader(framesPath: string, frameCount: number): Frame
     return () => {
       cancelled = true;
     };
-  }, [framesPath, frameCount]);
+  }, [framesPath, frameCount, safeStep]);
 
-  const progress = frameCount === 0 ? 1 : loadedCount / frameCount;
+  const progress = expected === 0 ? 1 : loadedCount / expected;
 
   return {
     images,
     loadedCount,
     progress,
-    isComplete: frameCount > 0 && loadedCount >= frameCount,
+    isComplete: expected > 0 && loadedCount >= expected,
   };
 }

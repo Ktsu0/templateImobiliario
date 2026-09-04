@@ -22,14 +22,14 @@ export const clientConfig = {
   hero: {
     mode: "frame-sequence",
     framesPath: "/clients/pioneira/hero-frames/",
-    frameCount: 90,
+    frameCount: 141,
     fallbackImage: "/clients/pioneira/hero-fallback.webp",
     phases: [{ label: "Aproximação", scrollRange: [0, 1.0] }],
     autoplayDurationMs: 6000,
   },
   journey: {
     framesPath: "/clients/pioneira/journey-frames/",
-    frameCount: 90,
+    frameCount: 141,
     fallbackImage: "/clients/pioneira/journey-fallback.webp",
     frameAspectRatio: 1366 / 768,
     scrollHeightVh: 320,

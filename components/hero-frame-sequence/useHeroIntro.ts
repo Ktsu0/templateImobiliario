@@ -6,7 +6,7 @@ import { useFramePreloader } from "@/hooks/useFramePreloader";
 import { useAutoplayProgress } from "@/hooks/useAutoplayProgress";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { shouldShowHeroFallback } from "@/lib/device";
-import { computeFrameBlend } from "@/lib/hero-frames";
+import { computeFrameBlend, frameStep } from "@/lib/hero-frames";
 import type { ClientHero } from "@/config/types";
 
 export const TITLE_REVEAL_PROGRESS = 0.75;
@@ -48,7 +48,8 @@ export function useHeroIntro(hero: ClientHero): HeroIntroState {
 
   const { images, progress: preloadProgress, isComplete } = useFramePreloader(
     hero.framesPath,
-    decision === "play" ? hero.frameCount : 0
+    decision === "play" ? hero.frameCount : 0,
+    frameStep(isMobile)
   );
 
   const { progress: autoplayProgress, complete } = useAutoplayProgress(

@@ -6,7 +6,7 @@ import { useFramePreloader } from "@/hooks/useFramePreloader";
 import { useHasMounted } from "@/hooks/useHasMounted";
 import { useSectionScrollProgress } from "@/hooks/useSectionScrollProgress";
 import { shouldShowHeroFallback } from "@/lib/device";
-import { computeFrameBlend } from "@/lib/hero-frames";
+import { computeFrameBlend, frameStep } from "@/lib/hero-frames";
 import { computeJourneyStage } from "@/lib/journey";
 import type { ClientJourney } from "@/config/types";
 
@@ -52,7 +52,8 @@ export function useJourneyScroll(
   const scrollProgress = useSectionScrollProgress(sectionRef);
   const { images, progress: preloadProgress } = useFramePreloader(
     journey.framesPath,
-    decision === "play" ? journey.frameCount : 0
+    decision === "play" ? journey.frameCount : 0,
+    frameStep(isMobile)
   );
 
   const stage = computeJourneyStage(showFallback ? 1 : scrollProgress, {
