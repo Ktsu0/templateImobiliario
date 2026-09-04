@@ -1,4 +1,12 @@
 import "@testing-library/jest-dom/vitest";
+import { afterEach } from "vitest";
+import { cleanup } from "@testing-library/react";
+
+// RTL only auto-cleans between tests when `afterEach` is a global; this
+// project runs Vitest without globals, so register it explicitly.
+afterEach(() => {
+  cleanup();
+});
 
 // jsdom does not implement matchMedia. Tests that need specific match
 // behavior (useMediaQuery, useConnectionType) install their own mock; this

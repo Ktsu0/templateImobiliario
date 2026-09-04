@@ -30,6 +30,18 @@ apontando para um `clientConfig` — nenhum componente contém marca, cor ou con
 Gera 90 frames em gradiente (cores do tema) + 1 fallback para `pioneira` — só para validar a
 mecânica do hero antes de haver fotos reais.
 
+## Imóveis do cliente demo
+
+`content/clients/pioneira/properties.json` tem 8 imóveis de exemplo. Cada imóvel aponta para 3
+fotos em `public/clients/pioneira/properties/<id>/photo-{1,2,3}.webp`.
+
+Para gerar as fotos placeholder (cores do tema):
+
+    npm run generate:pioneira-properties
+
+Ao trocar `properties.json` por dados reais de um cliente, gere/produza fotos de verdade nesses
+mesmos caminhos — nenhum componente precisa mudar.
+
 ## Roadmap
 
 Ver `ROADMAP.md` para funcionalidades fora do escopo do MVP.
