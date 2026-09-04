@@ -51,14 +51,15 @@ da tela e converta para porcentagem (`x / largura * 100`, `y / altura * 100`). D
 ## Imóveis do cliente demo
 
 `content/clients/pioneira/properties.json` tem 8 imóveis de exemplo. Cada imóvel aponta para 3
-fotos em `public/clients/pioneira/properties/<id>/photo-{1,2,3}.webp`.
+fotos; os caminhos são livres, os componentes só leem o array `photos`.
 
-Para gerar as fotos placeholder (cores do tema):
+No cliente demo, as fotos em `public/clients/pioneira/photos/casa-{1..8}.webp` são frames
+tirados dos dois vídeos do próprio cliente (fachada e interior), distribuídos em rotação entre os
+8 imóveis. Para um cliente real, coloque as fotos de verdade em `public/clients/<slug>/` e
+aponte cada imóvel para elas no JSON — nenhum componente precisa mudar.
 
-    npm run generate:pioneira-properties
-
-Ao trocar `properties.json` por dados reais de um cliente, gere/produza fotos de verdade nesses
-mesmos caminhos — nenhum componente precisa mudar.
+Sem fotos ainda? `npm run generate:pioneira-properties` cria placeholders nas cores do tema em
+`public/clients/pioneira/properties/<id>/photo-{1,2,3}.webp`; aponte o JSON para eles.
 
 ## Roadmap
 

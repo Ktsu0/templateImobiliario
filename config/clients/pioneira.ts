@@ -44,6 +44,7 @@ export const clientConfig = {
     previewFadeStart: 0.2,
     headline: "Da sala de estar ao seu próximo endereço",
     subheadline: "Percorra o imóvel sem sair daqui — e encontre o seu na tela.",
+    screenWelcome: "Bem-vindo. Seu próximo endereço começa aqui.",
   },
   contact: {
     whatsapp: "5541999999999",

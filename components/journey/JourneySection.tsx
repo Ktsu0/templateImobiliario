@@ -4,18 +4,18 @@ import { useJourneyScroll } from "./useJourneyScroll";
 import { JourneyCanvas } from "./JourneyCanvas";
 import { JourneyScreenPreview } from "./JourneyScreenPreview";
 import { FramePreloader } from "@/components/hero-frame-sequence/FramePreloader";
-import type { ClientJourney } from "@/config/types";
+import type { ClientBrand, ClientJourney } from "@/config/types";
 import type { Property } from "@/lib/content/types";
 
 interface JourneySectionProps {
   journey: ClientJourney;
   properties: Property[];
-  brandName: string;
+  brand: ClientBrand;
 }
 
 const PREVIEW_PROPERTY_COUNT = 3;
 
-export function JourneySection({ journey, properties, brandName }: JourneySectionProps) {
+export function JourneySection({ journey, properties, brand }: JourneySectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const state = useJourneyScroll(sectionRef, journey);
 
@@ -29,7 +29,7 @@ export function JourneySection({ journey, properties, brandName }: JourneySectio
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={journey.fallbackImage}
-          alt={`Interior do imóvel — ${brandName}`}
+          alt={`Interior do imóvel — ${brand.name}`}
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div
@@ -101,10 +101,24 @@ export function JourneySection({ journey, properties, brandName }: JourneySectio
                 containerType: "inline-size",
               }}
             >
-              <JourneyScreenPreview properties={previewProperties} brandName={brandName} />
+              <JourneyScreenPreview
+                properties={previewProperties}
+                brand={brand}
+                welcome={journey.screenWelcome}
+              />
             </div>
           </div>
         </div>
+
+        {/* The hero fades to the brand dark at its bottom edge; this veil lifts
+            over the first steps so the interior emerges from the same tone
+            instead of cutting from cool daylight to warm indoor light. */}
+        <div
+          data-testid="journey-veil"
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-bgDark"
+          style={{ opacity: state.entryVeil }}
+        />
 
         <FramePreloader progress={state.preloadProgress} />
 

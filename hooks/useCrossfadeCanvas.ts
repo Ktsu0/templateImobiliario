@@ -28,6 +28,11 @@ export function useCrossfadeCanvas(
     if (canvas.width !== width) canvas.width = width;
     if (canvas.height !== height) canvas.height = height;
 
+    // The bitmap is smaller than the viewport it fills; ask for the browser's
+    // best resampling filter instead of the default bilinear blur.
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+
     context.globalAlpha = 1;
     context.drawImage(currentImage, 0, 0, width, height);
 

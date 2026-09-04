@@ -19,6 +19,8 @@ export interface JourneyScrollState {
   scale: number;
   previewOpacity: number;
   zoomProgress: number;
+  walkProgress: number;
+  entryVeil: number;
   preloadProgress: number;
   showFallback: boolean;
 }
@@ -72,6 +74,8 @@ export function useJourneyScroll(
     scale: stage.scale,
     previewOpacity: stage.previewOpacity,
     zoomProgress: stage.zoomProgress,
+    walkProgress: stage.walkProgress,
+    entryVeil: stage.entryVeil,
     preloadProgress: decision === "play" ? preloadProgress : 1,
     showFallback,
   };

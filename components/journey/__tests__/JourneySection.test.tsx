@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import type { ClientJourney } from "@/config/types";
+import type { ClientBrand, ClientJourney } from "@/config/types";
 import type { Property } from "@/lib/content/types";
 
 vi.mock("next/image", () => ({
@@ -17,6 +17,13 @@ vi.mock("@/components/journey/useJourneyScroll", () => ({
 import { useJourneyScroll } from "@/components/journey/useJourneyScroll";
 import { JourneySection } from "@/components/journey/JourneySection";
 
+const brand: ClientBrand = {
+  name: "Pioneira Imóveis",
+  slogan: "Cada endereço, uma história para construir.",
+  logoUrl: "/clients/pioneira/logo.svg",
+  creci: "CRECI 12345-J",
+};
+
 const journey: ClientJourney = {
   framesPath: "/journey/",
   frameCount: 90,
@@ -28,6 +35,7 @@ const journey: ClientJourney = {
   zoomScale: 3.4,
   headline: "Da sala ao seu endereço",
   subheadline: "Percorra o imóvel sem sair daqui.",
+  screenWelcome: "Bem-vindo. Seu próximo endereço começa aqui.",
 };
 
 function makeProperty(id: string, title: string): Property {
@@ -63,10 +71,16 @@ function mockScroll(overrides: Partial<ReturnType<typeof useJourneyScroll>> = {}
     scale: 1,
     previewOpacity: 0,
     zoomProgress: 0,
+    walkProgress: 0,
+    entryVeil: 1,
     preloadProgress: 1,
     showFallback: false,
     ...overrides,
   });
+}
+
+function renderSection() {
+  return render(<JourneySection journey={journey} properties={properties} brand={brand} />);
 }
 
 beforeEach(() => {
@@ -76,53 +90,57 @@ beforeEach(() => {
 
 describe("JourneySection", () => {
   it("reserves scroll height and starts unzoomed with the screen preview hidden", () => {
-    const { container } = render(
-      <JourneySection journey={journey} properties={properties} brandName="Pioneira Imóveis" />
-    );
+    const { container } = renderSection();
 
     const section = container.querySelector("section") as HTMLElement;
+    expect(section.id).toBe("jornada");
     expect(section.style.height).toBe("320vh");
     expect(screen.getByTestId("journey-zoom").style.transform).toBe("scale(1)");
     expect(screen.getByTestId("journey-screen").style.opacity).toBe("0");
   });
 
+  it("opens under a full dark veil that lifts as the walk begins", () => {
+    renderSection();
+    expect(screen.getByTestId("journey-veil").style.opacity).toBe("1");
+
+    mockScroll({ walkProgress: 0.5, entryVeil: 0 });
+    renderSection();
+    expect(screen.getAllByTestId("journey-veil")[1].style.opacity).toBe("0");
+  });
+
   it("anchors the zoom on the centre of the laptop screen", () => {
-    render(
-      <JourneySection journey={journey} properties={properties} brandName="Pioneira Imóveis" />
-    );
+    renderSection();
     // screenRect x 34 + 38/2 = 53, y 24 + 37/2 = 42.5
     expect(screen.getByTestId("journey-zoom").style.transformOrigin).toBe("53% 42.5%");
   });
 
   it("scales up and reveals the preview at the end of the scroll", () => {
-    mockScroll({ scale: 3.4, previewOpacity: 1, zoomProgress: 1 });
-    render(
-      <JourneySection journey={journey} properties={properties} brandName="Pioneira Imóveis" />
-    );
+    mockScroll({ scale: 3.4, previewOpacity: 1, zoomProgress: 1, walkProgress: 1, entryVeil: 0 });
+    renderSection();
 
     expect(screen.getByTestId("journey-zoom").style.transform).toBe("scale(3.4)");
     expect(screen.getByTestId("journey-screen").style.opacity).toBe("1");
     expect(screen.getByTestId("journey-headline").style.opacity).toBe("0");
   });
 
-  it("shows only the first three properties on the laptop screen", () => {
+  it("puts the logo, the welcome line, three offers and a scroll cue on the screen", () => {
     mockScroll({ previewOpacity: 1 });
-    render(
-      <JourneySection journey={journey} properties={properties} brandName="Pioneira Imóveis" />
-    );
+    renderSection();
 
+    expect(screen.getByRole("img", { name: brand.name })).toHaveAttribute("src", brand.logoUrl);
+    expect(screen.getByText(journey.screenWelcome)).toBeInTheDocument();
     expect(screen.getByText("Casa Um")).toBeInTheDocument();
     expect(screen.getByText("Casa Três")).toBeInTheDocument();
     expect(screen.queryByText("Casa Quatro")).not.toBeInTheDocument();
+    expect(screen.getByText(/role para ver todos/i)).toBeInTheDocument();
   });
 
   it("drops the scroll-jacking entirely when falling back", () => {
     mockScroll({ showFallback: true });
-    const { container } = render(
-      <JourneySection journey={journey} properties={properties} brandName="Pioneira Imóveis" />
-    );
+    const { container } = renderSection();
 
     const section = container.querySelector("section") as HTMLElement;
+    expect(section.id).toBe("jornada");
     expect(section.style.height).toBe("");
     expect(container.querySelector("canvas")).toBeNull();
     expect(screen.getByRole("link", { name: /ver imóveis/i })).toHaveAttribute("href", "#imoveis");

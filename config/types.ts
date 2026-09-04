@@ -53,6 +53,8 @@ export interface ClientJourney {
   previewFadeStart?: number;
   headline: string;
   subheadline: string;
+  /** Welcome line shown on the laptop screen, above the offers. */
+  screenWelcome: string;
 }
 
 export interface ClientContact {

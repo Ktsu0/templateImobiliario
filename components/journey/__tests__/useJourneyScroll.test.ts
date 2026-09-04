@@ -24,6 +24,7 @@ const journey: ClientJourney = {
   zoomScale: 3.4,
   headline: "Headline",
   subheadline: "Sub",
+  screenWelcome: "Bem-vindo",
 };
 
 const images = Array.from({ length: 90 }, () => new Image());

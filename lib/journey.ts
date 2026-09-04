@@ -12,11 +12,16 @@ export interface JourneyStage {
   zoomProgress: number;
   scale: number;
   previewOpacity: number;
+  /** Dark veil over the first steps, so the cut from the hero is a dip, not a jump. */
+  entryVeil: number;
 }
 
 // The laptop screen "wakes up" early in the zoom: waiting longer means the
 // viewer watches a black rectangle grow instead of the offers coming at them.
 const DEFAULT_PREVIEW_FADE_START = 0.2;
+
+// Fraction of the walk over which the entry veil lifts.
+const ENTRY_FADE_SPAN = 0.22;
 
 function clamp01(value: number): number {
   return Math.min(Math.max(value, 0), 1);
@@ -46,5 +51,7 @@ export function computeJourneyStage(
   const previewOpacity =
     fadeSpan <= 0 ? (zoomRaw >= 1 ? 1 : 0) : clamp01((zoomRaw - fadeStart) / fadeSpan);
 
-  return { walkProgress, zoomProgress, scale, previewOpacity };
+  const entryVeil = clamp01(1 - walkProgress / ENTRY_FADE_SPAN);
+
+  return { walkProgress, zoomProgress, scale, previewOpacity, entryVeil };
 }

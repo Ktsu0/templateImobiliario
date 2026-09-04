@@ -63,6 +63,15 @@ describe("computeJourneyStage", () => {
     expect(stage.previewOpacity).toBe(0);
   });
 
+  it("starts fully veiled and lifts the veil within the first steps of the walk", () => {
+    expect(computeJourneyStage(0, config).entryVeil).toBe(1);
+    const early = computeJourneyStage(0.07, config).entryVeil; // walk ≈ 0.1
+    expect(early).toBeGreaterThan(0);
+    expect(early).toBeLessThan(1);
+    expect(computeJourneyStage(0.2, config).entryVeil).toBe(0); // walk ≈ 0.29
+    expect(computeJourneyStage(1, config).entryVeil).toBe(0);
+  });
+
   it("treats a zero-length walk phase as immediately finished", () => {
     const stage = computeJourneyStage(0, { zoomStartProgress: 0, zoomScale: 3 });
     expect(stage.walkProgress).toBe(1);
