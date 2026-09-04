@@ -47,6 +47,48 @@ beforeEach(() => {
   mockIntro();
 });
 
+describe("HeroFrameSequence — CTA target", () => {
+  /** Per-element spies: a shared Element.prototype spy cannot tell the two apart. */
+  function setUpAnchors(ids: string[]) {
+    document.body.innerHTML = ids.map((id) => `<div id="${id}"></div>`).join("");
+    const spies: Record<string, ReturnType<typeof vi.fn>> = {};
+    for (const id of ids) {
+      const spy = vi.fn();
+      spies[id] = spy;
+      (document.getElementById(id) as HTMLElement).scrollIntoView = spy;
+    }
+    return spies;
+  }
+
+  it("sends the CTA into the walkthrough when the page has one", () => {
+    const spies = setUpAnchors(["jornada", "imoveis"]);
+    mockIntro({ isTitleVisible: true });
+    render(<HeroFrameSequence brand={brand} hero={hero} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /ver imóveis/i }));
+    expect(spies.jornada).toHaveBeenCalledOnce();
+    expect(spies.imoveis).not.toHaveBeenCalled();
+  });
+
+  it("falls back to the listings when there is no walkthrough", () => {
+    const spies = setUpAnchors(["imoveis"]);
+    mockIntro({ isTitleVisible: true });
+    render(<HeroFrameSequence brand={brand} hero={hero} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /ver imóveis/i }));
+    expect(spies.imoveis).toHaveBeenCalledOnce();
+  });
+
+  it("skip jumps past the walkthrough straight to the listings", () => {
+    const spies = setUpAnchors(["jornada", "imoveis"]);
+    render(<HeroFrameSequence brand={brand} hero={hero} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /pular introdução/i }));
+    expect(spies.imoveis).toHaveBeenCalledOnce();
+    expect(spies.jornada).not.toHaveBeenCalled();
+  });
+});
+
 describe("HeroFrameSequence", () => {
   it("keeps the title hidden until the intro reveals it", () => {
     render(<HeroFrameSequence brand={brand} hero={hero} />);

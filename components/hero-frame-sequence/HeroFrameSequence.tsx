@@ -9,11 +9,21 @@ interface HeroFrameSequenceProps {
   hero: ClientHero;
 }
 
-function scrollToProperties() {
+function scrollTo(id: string) {
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document.getElementById("imoveis")?.scrollIntoView({
+  document.getElementById(id)?.scrollIntoView({
     behavior: prefersReducedMotion ? "auto" : "smooth",
   });
+}
+
+/**
+ * The hero's own CTA continues the story into the walkthrough when there is
+ * one — sending it straight to the listings would skip the whole journey,
+ * which is the part that sells the site. "Pular introdução" still jumps
+ * past everything to the listings.
+ */
+function scrollToNextSection() {
+  scrollTo(document.getElementById("jornada") ? "jornada" : "imoveis");
 }
 
 export function HeroFrameSequence({ brand, hero }: HeroFrameSequenceProps) {
@@ -21,7 +31,7 @@ export function HeroFrameSequence({ brand, hero }: HeroFrameSequenceProps) {
 
   const handleSkip = () => {
     intro.skipIntro();
-    scrollToProperties();
+    scrollTo("imoveis");
   };
 
   const revealClasses = intro.isTitleVisible
@@ -64,7 +74,7 @@ export function HeroFrameSequence({ brand, hero }: HeroFrameSequenceProps) {
         <p className="mt-4 max-w-xl font-body text-lg text-ivory/90 md:text-xl">{brand.slogan}</p>
         <button
           type="button"
-          onClick={scrollToProperties}
+          onClick={scrollToNextSection}
           tabIndex={intro.isTitleVisible ? 0 : -1}
           className="mt-8 rounded-full bg-brass px-6 py-3 font-body font-semibold text-bgDark shadow-lg transition-colors hover:bg-brassLight focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
         >

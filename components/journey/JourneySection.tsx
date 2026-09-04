@@ -25,7 +25,7 @@ export function JourneySection({ journey, properties, brandName }: JourneySectio
 
   if (state.showFallback) {
     return (
-      <section className="relative h-screen w-full overflow-hidden bg-bgDark">
+      <section id="jornada" className="relative h-screen w-full overflow-hidden bg-bgDark">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={journey.fallbackImage}
@@ -60,6 +60,7 @@ export function JourneySection({ journey, properties, brandName }: JourneySectio
 
   return (
     <section
+      id="jornada"
       ref={sectionRef}
       style={{ height: `${journey.scrollHeightVh}vh` }}
       className="relative bg-bgDark"
