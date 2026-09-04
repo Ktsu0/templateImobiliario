@@ -1,0 +1,37 @@
+[
+  {
+    "id": "t1",
+    "name": "Marina Alcântara",
+    "role": "Comprou no Bigorrilho",
+    "rating": 5,
+    "quote": "Visitamos sete imóveis em dois fins de semana e a corretora já sabia exatamente o que descartar. Fechamos na terceira visita do segundo sábado."
+  },
+  {
+    "id": "t2",
+    "name": "Rodrigo Perazzo",
+    "role": "Alugou no Batel",
+    "rating": 5,
+    "quote": "Precisava mudar em três semanas por causa do trabalho. Assinaram o contrato em nove dias e resolveram a vistoria sem eu precisar sair do escritório."
+  },
+  {
+    "id": "t3",
+    "name": "Cláudia e Ivan Refosco",
+    "role": "Venderam em Santa Felicidade",
+    "rating": 4,
+    "quote": "O laudo veio abaixo do que esperávamos e eles explicaram por quê, com dados de vendas da rua. Ajustamos o preço e saiu em cinco semanas."
+  },
+  {
+    "id": "t4",
+    "name": "Tereza Nakamura",
+    "role": "Investidora",
+    "rating": 5,
+    "quote": "É o terceiro apartamento que compro com eles. O que me segura é o pós-venda: documentação, inquilino e reforma resolvidos sem eu correr atrás."
+  },
+  {
+    "id": "t5",
+    "name": "Felipe Andrade",
+    "role": "Primeiro imóvel",
+    "rating": 5,
+    "quote": "Nunca tinha comprado nada financiado. Sentaram comigo, simularam três bancos e me disseram qual parcela cabia de verdade no meu orçamento."
+  }
+]

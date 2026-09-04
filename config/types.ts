@@ -57,10 +57,19 @@ export interface ClientJourney {
   screenWelcome: string;
 }
 
+export interface SocialLink {
+  label: string;
+  url: string;
+}
+
 export interface ClientContact {
   whatsapp: string;
   address: string;
   mapStyle: string;
+  phone: string;
+  email: string;
+  businessHours: string;
+  social: SocialLink[];
 }
 
 export interface ClientConfig {

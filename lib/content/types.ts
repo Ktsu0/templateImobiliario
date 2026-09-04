@@ -1,3 +1,11 @@
+export interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  rating: number;
+  quote: string;
+}
+
 export interface Property {
   id: string;
   title: string;

@@ -61,6 +61,7 @@ describe("PropertyGrid", () => {
 
   it("shows an empty-state message when the filtered list is empty", () => {
     render(<PropertyGrid properties={[]} whatsappNumber="5541999999999" />);
-    expect(screen.getByText(/nenhum imóvel encontrado/i)).toBeInTheDocument();
+    expect(screen.getByText(/nenhum imóvel para esses filtros/i)).toBeInTheDocument();
+    expect(screen.getByText(/ampliar a faixa de preço/i)).toBeInTheDocument();
   });
 });

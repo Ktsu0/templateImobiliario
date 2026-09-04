@@ -10,9 +10,12 @@ interface PropertyGridProps {
 export function PropertyGrid({ properties, whatsappNumber }: PropertyGridProps) {
   if (properties.length === 0) {
     return (
-      <p className="rounded-xl bg-ink/40 p-8 text-center font-body text-sand/80">
-        Nenhum imóvel encontrado para esses filtros.
-      </p>
+      <div className="flex min-h-[55vh] flex-col items-center justify-center gap-3 rounded-xl border border-ivory/10 bg-ink/40 p-8 text-center">
+        <p className="font-display text-xl text-ivory">Nenhum imóvel para esses filtros</p>
+        <p className="max-w-sm font-body text-sm text-sand/75">
+          Tente ampliar a faixa de preço ou remover a localização.
+        </p>
+      </div>
     );
   }
 

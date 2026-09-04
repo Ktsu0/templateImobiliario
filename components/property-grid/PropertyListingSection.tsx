@@ -26,7 +26,10 @@ export function PropertyListingSection({ properties, whatsappNumber }: PropertyL
     <div className="relative">
       <FloatingFilterBar propertyTypes={propertyTypes} />
       <FilterBottomSheet propertyTypes={propertyTypes} />
-      <div className="mt-6">
+      {/* Reserved height: filtering down to few or no results used to shrink
+          the page by hundreds of pixels, which made the browser clamp the
+          scroll position and throw the visitor back up into the journey. */}
+      <div className="mt-6 min-h-[70vh]">
         <PropertyGrid properties={filtered} whatsappNumber={whatsappNumber} />
       </div>
     </div>

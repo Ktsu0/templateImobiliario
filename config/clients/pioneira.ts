@@ -50,5 +50,13 @@ export const clientConfig = {
     whatsapp: "5541999999999",
     address: "Rua das Araucárias, 480 — Curitiba, PR",
     mapStyle: "dark-gold",
+    phone: "(41) 3333-0000",
+    email: "contato@pioneiraimoveis.com.br",
+    businessHours: "Seg a sex, 9h às 18h · Sáb, 9h às 13h",
+    social: [
+      { label: "Instagram", url: "https://instagram.com" },
+      { label: "Facebook", url: "https://facebook.com" },
+      { label: "LinkedIn", url: "https://linkedin.com" },
+    ],
   },
 } satisfies ClientConfig;
