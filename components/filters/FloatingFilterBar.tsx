@@ -1,7 +1,8 @@
 "use client";
 import { useFilterStore } from "@/stores/useFilterStore";
 import { DEFAULT_FILTERS } from "@/lib/filters";
-import { SelectShell, filterInputClass, filterSelectClass } from "./FilterField";
+import { SearchIcon } from "@/components/ui/icons";
+import { SelectShell, TransactionSegments, controlClass, selectClass } from "./FilterField";
 
 interface FloatingFilterBarProps {
   propertyTypes: string[];
@@ -20,29 +21,21 @@ export function FloatingFilterBar({ propertyTypes }: FloatingFilterBarProps) {
     filters.priceRange[0] !== DEFAULT_FILTERS.priceRange[0] ||
     filters.priceRange[1] !== DEFAULT_FILTERS.priceRange[1];
 
+  const priceInputClass =
+    "w-[4.5rem] bg-transparent font-body text-sm text-ivory placeholder:text-sand/45 focus-visible:outline-none";
+
   return (
-    <div className="sticky top-4 z-30 mx-auto hidden w-fit max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-brass/20 bg-ink/85 p-2 shadow-xl shadow-black/40 backdrop-blur-md md:flex">
-      <SelectShell>
-        <select
-          aria-label="Transação"
-          value={filters.transaction}
-          onChange={(event) =>
-            setFilter("transaction", event.target.value as typeof filters.transaction)
-          }
-          className={filterSelectClass}
-        >
-          <option value="todos">Comprar/Alugar</option>
-          <option value="venda">Comprar</option>
-          <option value="aluguel">Alugar</option>
-        </select>
-      </SelectShell>
+    <div className="sticky top-4 z-30 mx-auto hidden w-full max-w-5xl items-center gap-2 rounded-2xl border border-brass/20 bg-ink/90 p-2 shadow-xl shadow-black/40 backdrop-blur-md md:flex">
+      <TransactionSegments />
+
+      <span aria-hidden="true" className="h-6 w-px shrink-0 bg-ivory/10" />
 
       <SelectShell>
         <select
           aria-label="Tipo de imóvel"
           value={filters.propertyType}
           onChange={(event) => setFilter("propertyType", event.target.value)}
-          className={filterSelectClass}
+          className={selectClass}
         >
           <option value="todos">Tipo</option>
           {propertyTypes.map((type) => (
@@ -53,17 +46,20 @@ export function FloatingFilterBar({ propertyTypes }: FloatingFilterBarProps) {
         </select>
       </SelectShell>
 
-      <input
-        type="text"
-        aria-label="Localização"
-        placeholder="Localização"
-        value={filters.location}
-        onChange={(event) => setFilter("location", event.target.value)}
-        className={`w-36 ${filterInputClass}`}
-      />
+      <div className="relative min-w-[9rem] flex-1">
+        <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sand/45" />
+        <input
+          type="text"
+          aria-label="Localização"
+          placeholder="Bairro ou cidade"
+          value={filters.location}
+          onChange={(event) => setFilter("location", event.target.value)}
+          className={`w-full pl-9 ${controlClass}`}
+        />
+      </div>
 
-      <div className="flex items-center gap-1 rounded-full border border-ivory/15 bg-bgDark/70 px-3 py-1">
-        <span className="font-body text-xs uppercase tracking-wider text-sand/60">R$</span>
+      <div className={`flex shrink-0 items-center gap-1 ${controlClass} px-3`}>
+        <span className="font-body text-xs text-sand/50">R$</span>
         <input
           type="number"
           aria-label="Preço mínimo"
@@ -72,9 +68,11 @@ export function FloatingFilterBar({ propertyTypes }: FloatingFilterBarProps) {
           onChange={(event) =>
             setFilter("priceRange", [Number(event.target.value) || 0, filters.priceRange[1]])
           }
-          className="w-20 bg-transparent px-1 py-1 font-body text-sm text-ivory placeholder:text-sand/50 focus-visible:outline-none"
+          className={priceInputClass}
         />
-        <span className="text-sand/40">–</span>
+        <span aria-hidden="true" className="text-sand/30">
+          –
+        </span>
         <input
           type="number"
           aria-label="Preço máximo"
@@ -83,7 +81,7 @@ export function FloatingFilterBar({ propertyTypes }: FloatingFilterBarProps) {
           onChange={(event) =>
             setFilter("priceRange", [filters.priceRange[0], Number(event.target.value) || Infinity])
           }
-          className="w-20 bg-transparent px-1 py-1 font-body text-sm text-ivory placeholder:text-sand/50 focus-visible:outline-none"
+          className={priceInputClass}
         />
       </div>
 
@@ -92,7 +90,7 @@ export function FloatingFilterBar({ propertyTypes }: FloatingFilterBarProps) {
           aria-label="Quartos"
           value={filters.bedrooms}
           onChange={(event) => setFilter("bedrooms", Number(event.target.value))}
-          className={filterSelectClass}
+          className={selectClass}
         >
           <option value={0}>Quartos</option>
           <option value={1}>1+</option>
@@ -106,9 +104,10 @@ export function FloatingFilterBar({ propertyTypes }: FloatingFilterBarProps) {
         <button
           type="button"
           onClick={resetFilters}
-          className="rounded-full px-3 py-2 font-body text-sm text-sand/70 transition-colors hover:text-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-brass"
+          aria-label="Limpar filtros"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg text-sand/60 transition-colors hover:bg-ivory/5 hover:text-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-brass"
         >
-          Limpar
+          ×
         </button>
       )}
     </div>

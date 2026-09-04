@@ -9,10 +9,15 @@ beforeEach(() => {
 });
 
 describe("FloatingFilterBar", () => {
-  it("updates the shared store when the transaction select changes", () => {
+  it("updates the shared store from the transaction segments", () => {
     render(<FloatingFilterBar propertyTypes={["Casa", "Apartamento"]} />);
-    fireEvent.change(screen.getByLabelText(/transação/i), { target: { value: "aluguel" } });
+    const segments = screen.getByRole("group", { name: /transação/i });
+
+    fireEvent.click(screen.getByRole("button", { name: "Alugar" }));
     expect(useFilterStore.getState().filters.transaction).toBe("aluguel");
+    expect(screen.getByRole("button", { name: "Alugar" })).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByRole("button", { name: "Comprar" })).toHaveAttribute("aria-pressed", "false");
+    expect(segments).toBeInTheDocument();
   });
 
   it("updates the store when the location input changes", () => {

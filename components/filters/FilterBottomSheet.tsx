@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useFilterStore } from "@/stores/useFilterStore";
-import { SelectShell, filterInputClass, filterSelectClass } from "./FilterField";
+import { SearchIcon } from "@/components/ui/icons";
+import { SelectShell, TransactionSegments, controlClass, selectClass } from "./FilterField";
 
 interface FilterBottomSheetProps {
   propertyTypes: string[];
@@ -12,6 +13,8 @@ export function FilterBottomSheet({ propertyTypes }: FilterBottomSheetProps) {
   const filters = useFilterStore((state) => state.filters);
   const setFilter = useFilterStore((state) => state.setFilter);
   const resetFilters = useFilterStore((state) => state.resetFilters);
+
+  const fullWidthControl = `w-full ${controlClass}`;
 
   return (
     <div className="md:hidden">
@@ -37,27 +40,14 @@ export function FilterBottomSheet({ propertyTypes }: FilterBottomSheetProps) {
           >
             <div className="mx-auto mb-1 h-1 w-10 rounded-full bg-sand/40" />
 
-            <SelectShell>
-              <select
-                aria-label="Transação"
-                value={filters.transaction}
-                onChange={(event) =>
-                  setFilter("transaction", event.target.value as typeof filters.transaction)
-                }
-                className={filterSelectClass}
-              >
-                <option value="todos">Comprar/Alugar</option>
-                <option value="venda">Comprar</option>
-                <option value="aluguel">Alugar</option>
-              </select>
-            </SelectShell>
+            <TransactionSegments className="w-full [&>button]:flex-1" />
 
             <SelectShell>
               <select
                 aria-label="Tipo de imóvel"
                 value={filters.propertyType}
                 onChange={(event) => setFilter("propertyType", event.target.value)}
-                className={filterSelectClass}
+                className={`w-full ${selectClass}`}
               >
                 <option value="todos">Tipo</option>
                 {propertyTypes.map((type) => (
@@ -68,30 +58,33 @@ export function FilterBottomSheet({ propertyTypes }: FilterBottomSheetProps) {
               </select>
             </SelectShell>
 
-            <input
-              type="text"
-              aria-label="Localização"
-              placeholder="Localização"
-              value={filters.location}
-              onChange={(event) => setFilter("location", event.target.value)}
-              className={filterInputClass}
-            />
+            <div className="relative">
+              <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-sand/45" />
+              <input
+                type="text"
+                aria-label="Localização"
+                placeholder="Bairro ou cidade"
+                value={filters.location}
+                onChange={(event) => setFilter("location", event.target.value)}
+                className={`pl-9 ${fullWidthControl}`}
+              />
+            </div>
 
             <div className="flex gap-2">
               <input
                 type="number"
                 aria-label="Preço mínimo"
-                placeholder="Preço mín."
+                placeholder="R$ mín."
                 value={filters.priceRange[0] === 0 ? "" : filters.priceRange[0]}
                 onChange={(event) =>
                   setFilter("priceRange", [Number(event.target.value) || 0, filters.priceRange[1]])
                 }
-                className={filterInputClass}
+                className={fullWidthControl}
               />
               <input
                 type="number"
                 aria-label="Preço máximo"
-                placeholder="Preço máx."
+                placeholder="R$ máx."
                 value={Number.isFinite(filters.priceRange[1]) ? filters.priceRange[1] : ""}
                 onChange={(event) =>
                   setFilter("priceRange", [
@@ -99,7 +92,7 @@ export function FilterBottomSheet({ propertyTypes }: FilterBottomSheetProps) {
                     Number(event.target.value) || Infinity,
                   ])
                 }
-                className={filterInputClass}
+                className={fullWidthControl}
               />
             </div>
 
@@ -108,7 +101,7 @@ export function FilterBottomSheet({ propertyTypes }: FilterBottomSheetProps) {
                 aria-label="Quartos"
                 value={filters.bedrooms}
                 onChange={(event) => setFilter("bedrooms", Number(event.target.value))}
-                className={filterSelectClass}
+                className={`w-full ${selectClass}`}
               >
                 <option value={0}>Quartos</option>
                 <option value={1}>1+</option>
@@ -122,14 +115,14 @@ export function FilterBottomSheet({ propertyTypes }: FilterBottomSheetProps) {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="rounded-full border border-ivory/15 px-4 py-2.5 font-body text-sm text-sand/80 transition-colors hover:text-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-brass"
+                className="h-11 rounded-xl border border-ivory/15 px-4 font-body text-sm text-sand/80 transition-colors hover:text-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-brass"
               >
                 Limpar
               </button>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="flex-1 rounded-full bg-brass px-4 py-2.5 font-body font-semibold text-bgDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
+                className="h-11 flex-1 rounded-xl bg-brass font-body font-semibold text-bgDark focus-visible:outline focus-visible:outline-2 focus-visible:outline-ivory"
               >
                 Aplicar filtros
               </button>

@@ -26,7 +26,7 @@ const ENTRY_FADE_SPAN = 0.22;
 // The veil only tints the opening frames toward the brand dark — it never
 // blacks them out, so the interior is already on screen when the section
 // arrives instead of fading in from nothing.
-const ENTRY_VEIL_MAX = 0.5;
+const ENTRY_VEIL_MAX = 0.35;
 
 function clamp01(value: number): number {
   return Math.min(Math.max(value, 0), 1);

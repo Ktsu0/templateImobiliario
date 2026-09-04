@@ -20,7 +20,7 @@ describe("FilterBottomSheet", () => {
   it("updates the shared store from within the sheet", () => {
     render(<FilterBottomSheet propertyTypes={["Casa"]} />);
     fireEvent.click(screen.getByRole("button", { name: /abrir filtros/i }));
-    fireEvent.change(screen.getByLabelText(/transação/i), { target: { value: "aluguel" } });
+    fireEvent.click(screen.getByRole("button", { name: "Alugar" }));
     expect(useFilterStore.getState().filters.transaction).toBe("aluguel");
   });
 
