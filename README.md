@@ -30,6 +30,24 @@ apontando para um `clientConfig` — nenhum componente contém marca, cor ou con
 Gera 90 frames em gradiente (cores do tema) + 1 fallback para `pioneira` — só para validar a
 mecânica do hero antes de haver fotos reais.
 
+## Jornada (segundo vídeo, controlado por scroll)
+
+`clientConfig.journey` liga a seção que fica entre o hero e os imóveis: uma caminhada pelo
+interior, frame a frame conforme o scroll, que termina com um zoom na tela do notebook onde
+as ofertas aparecem.
+
+Frames em `public/clients/<slug>/journey-frames/frame-001.webp`... e o último frame copiado
+como `journey-fallback.webp`. Extração igual à do hero (ver seção acima), trocando a pasta
+de saída.
+
+O ajuste que exige medição é o `screenRect`: onde fica a tela do notebook **no último frame**,
+em % do quadro. Para medir, abra o último frame num editor de imagem, selecione a área preta
+da tela e converta para porcentagem (`x / largura * 100`, `y / altura * 100`). Depois ajuste:
+
+- `zoomScale` — quanto o quadro cresce até a tela cobrir a viewport (3 costuma bastar).
+- `zoomStartProgress` — fração do scroll gasta caminhando antes do zoom começar.
+- `previewFadeStart` — em que ponto do zoom a tela "liga" e mostra as ofertas.
+
 ## Imóveis do cliente demo
 
 `content/clients/pioneira/properties.json` tem 8 imóveis de exemplo. Cada imóvel aponta para 3

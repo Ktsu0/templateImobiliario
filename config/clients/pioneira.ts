@@ -27,6 +27,24 @@ export const clientConfig = {
     phases: [{ label: "Aproximação", scrollRange: [0, 1.0] }],
     autoplayDurationMs: 6000,
   },
+  journey: {
+    framesPath: "/clients/pioneira/journey-frames/",
+    frameCount: 90,
+    fallbackImage: "/clients/pioneira/journey-fallback.webp",
+    frameAspectRatio: 1366 / 768,
+    scrollHeightVh: 320,
+    // Medido no último frame (ver README): a tela preta ocupa
+    // x 32,5% / y 22,1% / 41,3% × 41,7%. Aqui vai levemente para dentro,
+    // para o conteúdo ficar no vidro e não sobre o bezel.
+    screenRect: { x: 34, y: 24, width: 38, height: 37 },
+    zoomStartProgress: 0.7,
+    // 3.0 leva a tela do notebook a cobrir a viewport com uma folga pequena;
+    // acima disso o conteúdo passa do necessário e perde nitidez.
+    zoomScale: 3,
+    previewFadeStart: 0.2,
+    headline: "Da sala de estar ao seu próximo endereço",
+    subheadline: "Percorra o imóvel sem sair daqui — e encontre o seu na tela.",
+  },
   contact: {
     whatsapp: "5541999999999",
     address: "Rua das Araucárias, 480 — Curitiba, PR",
