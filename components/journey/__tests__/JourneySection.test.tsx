@@ -18,9 +18,9 @@ import { useJourneyScroll } from "@/components/journey/useJourneyScroll";
 import { JourneySection } from "@/components/journey/JourneySection";
 
 const brand: ClientBrand = {
-  name: "Pioneira Imóveis",
+  name: "Meridiano Imóveis",
   slogan: "Cada endereço, uma história para construir.",
-  logoUrl: "/clients/pioneira/logo.svg",
+  logoUrl: "/clients/meridiano/logo.svg",
   creci: "CRECI 12345-J",
 };
 

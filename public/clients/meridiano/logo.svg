@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 452 96" width="452" height="96" role="img" aria-label="Meridiano Imóveis">
+  <!-- Demo client mark: a meridian — the line that fixes a place on the map. -->
+  <g fill="none" stroke="#B08D57" stroke-width="2.4" stroke-linecap="round">
+    <circle cx="44" cy="48" r="27" />
+    <ellipse cx="44" cy="48" rx="11.5" ry="27" />
+    <path d="M17.6 39.5h52.8M17.6 56.5h52.8" opacity=".65" />
+    <path d="M44 12.5v71" stroke="#D9C7A3" stroke-width="1.4" opacity=".55" />
+  </g>
+
+  <text x="92" y="55" font-family="Fraunces, Georgia, serif" font-size="38" font-weight="600"
+        letter-spacing="0.4" fill="#F6F1E7">Meridiano</text>
+  <text x="94" y="80" font-family="Manrope, system-ui, sans-serif" font-size="13.5"
+        letter-spacing="6.5" fill="#D9C7A3">IMÓVEIS</text>
+</svg>

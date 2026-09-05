@@ -1,8 +1,8 @@
 import type { ClientConfig } from "./types";
-import { clientConfig as pioneira } from "./clients/pioneira";
+import { clientConfig as meridiano } from "./clients/meridiano";
 
 const clients: Record<string, ClientConfig> = {
-  pioneira,
+  meridiano,
 };
 
 function resolveActiveClientConfig(): ClientConfig {
@@ -10,7 +10,7 @@ function resolveActiveClientConfig(): ClientConfig {
   if (slug && clients[slug]) {
     return clients[slug];
   }
-  return pioneira;
+  return meridiano;
 }
 
 export const activeClientConfig: ClientConfig = resolveActiveClientConfig();

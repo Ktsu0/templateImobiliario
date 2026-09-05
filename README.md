@@ -14,7 +14,7 @@ apontando para um `clientConfig` — nenhum componente contém marca, cor ou con
 
 ## Onboarding de um novo cliente
 
-1. Duplique `config/clients/pioneira.ts` como `config/clients/<slug>.ts` e preencha
+1. Duplique `config/clients/meridiano.ts` como `config/clients/<slug>.ts` e preencha
    `brand`, `theme`, `hero` e `contact` com os dados reais do cliente.
 2. Registre o novo config no mapa `clients` em `config/active-client.ts`.
 3. Gere ou produza os frames do hero (WebP, `frame-001.webp`...`frame-NNN.webp`) e a imagem
@@ -25,9 +25,9 @@ apontando para um `clientConfig` — nenhum componente contém marca, cor ou con
 
 ## Gerando frames placeholder do cliente demo
 
-    npm run generate:pioneira-frames
+    npm run generate:meridiano-frames
 
-Gera 90 frames em gradiente (cores do tema) + 1 fallback para `pioneira` — só para validar a
+Gera 90 frames em gradiente (cores do tema) + 1 fallback para `meridiano` — só para validar a
 mecânica do hero antes de haver fotos reais.
 
 ## Jornada (segundo vídeo, controlado por scroll)
@@ -50,16 +50,16 @@ da tela e converta para porcentagem (`x / largura * 100`, `y / altura * 100`). D
 
 ## Imóveis do cliente demo
 
-`content/clients/pioneira/properties.json` tem 8 imóveis de exemplo. Cada imóvel aponta para 3
+`content/clients/meridiano/properties.json` tem 8 imóveis de exemplo. Cada imóvel aponta para 3
 fotos; os caminhos são livres, os componentes só leem o array `photos`.
 
-No cliente demo, as fotos em `public/clients/pioneira/photos/casa-{1..8}.webp` são frames
+No cliente demo, as fotos em `public/clients/meridiano/photos/casa-{1..8}.webp` são frames
 tirados dos dois vídeos do próprio cliente (fachada e interior), distribuídos em rotação entre os
 8 imóveis. Para um cliente real, coloque as fotos de verdade em `public/clients/<slug>/` e
 aponte cada imóvel para elas no JSON — nenhum componente precisa mudar.
 
-Sem fotos ainda? `npm run generate:pioneira-properties` cria placeholders nas cores do tema em
-`public/clients/pioneira/properties/<id>/photo-{1,2,3}.webp`; aponte o JSON para eles.
+Sem fotos ainda? `npm run generate:meridiano-properties` cria placeholders nas cores do tema em
+`public/clients/meridiano/properties/<id>/photo-{1,2,3}.webp`; aponte o JSON para eles.
 
 ## Roadmap
 

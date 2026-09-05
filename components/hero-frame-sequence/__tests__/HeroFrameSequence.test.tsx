@@ -10,7 +10,7 @@ import { useHeroIntro } from "@/components/hero-frame-sequence/useHeroIntro";
 import { HeroFrameSequence } from "@/components/hero-frame-sequence/HeroFrameSequence";
 
 const brand: ClientBrand = {
-  name: "Pioneira Imóveis",
+  name: "Meridiano Imóveis",
   slogan: "Cada endereço, uma história para construir.",
   logoUrl: "/logo.svg",
   creci: "CRECI 12345-J",

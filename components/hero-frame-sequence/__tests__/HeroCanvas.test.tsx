@@ -9,7 +9,7 @@ const baseProps = {
   introProgress: 0,
   showFallback: false,
   fallbackImage: "/fallback.webp",
-  brandName: "Pioneira Imóveis",
+  brandName: "Meridiano Imóveis",
   onSkip: () => {},
 };
 
@@ -22,7 +22,7 @@ describe("HeroCanvas", () => {
     const onSkip = vi.fn();
     render(<HeroCanvas {...baseProps} showFallback={true} onSkip={onSkip} />);
 
-    expect(screen.getByRole("img", { name: /pioneira imóveis/i })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /meridiano imóveis/i })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /pular introdução/i }));
     expect(onSkip).toHaveBeenCalledOnce();
   });

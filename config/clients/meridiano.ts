@@ -1,12 +1,12 @@
 import type { ClientConfig } from "../types";
 
 export const clientConfig = {
-  slug: "pioneira",
+  slug: "meridiano",
   brand: {
-    name: "Pioneira Imóveis",
+    name: "Meridiano Imóveis",
     slogan: "Cada endereço, uma história para construir.",
-    logoUrl: "/clients/pioneira/logo.svg",
-    creci: "CRECI 12345-J",
+    logoUrl: "/clients/meridiano/logo.svg",
+    creci: "CRECI-PR 28.417-J",
   },
   theme: {
     bgDark: "#14201A",
@@ -21,16 +21,16 @@ export const clientConfig = {
   },
   hero: {
     mode: "frame-sequence",
-    framesPath: "/clients/pioneira/hero-frames/",
+    framesPath: "/clients/meridiano/hero-frames/",
     frameCount: 141,
-    fallbackImage: "/clients/pioneira/hero-fallback.webp",
+    fallbackImage: "/clients/meridiano/hero-fallback.webp",
     phases: [{ label: "Aproximação", scrollRange: [0, 1.0] }],
     autoplayDurationMs: 6000,
   },
   journey: {
-    framesPath: "/clients/pioneira/journey-frames/",
+    framesPath: "/clients/meridiano/journey-frames/",
     frameCount: 141,
-    fallbackImage: "/clients/pioneira/journey-fallback.webp",
+    fallbackImage: "/clients/meridiano/journey-fallback.webp",
     frameAspectRatio: 1366 / 768,
     scrollHeightVh: 320,
     // Medido no último frame (ver README): a tela preta ocupa
@@ -51,7 +51,7 @@ export const clientConfig = {
     address: "Rua das Araucárias, 480 — Curitiba, PR",
     mapStyle: "dark-gold",
     phone: "(41) 3333-0000",
-    email: "contato@pioneiraimoveis.com.br",
+    email: "contato@meridianoimoveis.com.br",
     businessHours: "Seg a sex, 9h às 18h · Sáb, 9h às 13h",
     social: [
       { label: "Instagram", url: "https://instagram.com" },

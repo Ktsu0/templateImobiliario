@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { pickColor } from "@/scripts/generate-placeholder-properties";
-import { clientConfig } from "@/config/clients/pioneira";
+import { clientConfig } from "@/config/clients/meridiano";
 
 describe("pickColor", () => {
   it("cycles through the theme palette", () => {

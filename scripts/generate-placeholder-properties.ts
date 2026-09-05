@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { clientConfig } from "../config/clients/pioneira";
+import { clientConfig } from "../config/clients/meridiano";
 import { getProperties } from "../lib/content/properties";
 
 const WIDTH = 1200;
@@ -39,7 +39,7 @@ async function main() {
 
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i];
-    const dir = path.join(process.cwd(), "public", "clients", "pioneira", "properties", property.id);
+    const dir = path.join(process.cwd(), "public", "clients", "meridiano", "properties", property.id);
     await mkdir(dir, { recursive: true });
 
     for (let photoIndex = 1; photoIndex <= PHOTOS_PER_PROPERTY; photoIndex++) {

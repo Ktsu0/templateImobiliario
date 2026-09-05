@@ -4,9 +4,9 @@ import { SiteFooter } from "@/components/footer/SiteFooter";
 import type { ClientBrand, ClientContact } from "@/config/types";
 
 const brand: ClientBrand = {
-  name: "Pioneira Imóveis",
+  name: "Meridiano Imóveis",
   slogan: "Cada endereço, uma história para construir.",
-  logoUrl: "/clients/pioneira/logo.svg",
+  logoUrl: "/clients/meridiano/logo.svg",
   creci: "CRECI 12345-J",
 };
 
@@ -15,7 +15,7 @@ const contact: ClientContact = {
   address: "Rua das Araucárias, 480 — Curitiba, PR",
   mapStyle: "dark-gold",
   phone: "(41) 3333-0000",
-  email: "contato@pioneiraimoveis.com.br",
+  email: "contato@meridianoimoveis.com.br",
   businessHours: "Seg a sex, 9h às 18h",
   social: [{ label: "Instagram", url: "https://instagram.com" }],
 };

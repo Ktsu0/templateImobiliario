@@ -1,10 +1,10 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { clientConfig } from "../config/clients/pioneira";
+import { clientConfig } from "../config/clients/meridiano";
 
-const OUTPUT_DIR = path.join(process.cwd(), "public", "clients", "pioneira", "hero-frames");
-const FALLBACK_PATH = path.join(process.cwd(), "public", "clients", "pioneira", "hero-fallback.webp");
+const OUTPUT_DIR = path.join(process.cwd(), "public", "clients", "meridiano", "hero-frames");
+const FALLBACK_PATH = path.join(process.cwd(), "public", "clients", "meridiano", "hero-fallback.webp");
 const WIDTH = 1600;
 const HEIGHT = 900;
 
