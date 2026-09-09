@@ -25,8 +25,8 @@ const brand: ClientBrand = {
 };
 
 const journey: ClientJourney = {
-  framesPath: "/journey/",
-  frameCount: 90,
+  videoSrc: "/journey.mp4",
+  posterImage: "/journey-poster.webp",
   fallbackImage: "/journey-fallback.webp",
   frameAspectRatio: 1366 / 768,
   scrollHeightVh: 320,
@@ -35,8 +35,9 @@ const journey: ClientJourney = {
   zoomScale: 3.4,
   headline: "Da sala ao seu endereço",
   subheadline: "Percorra o imóvel sem sair daqui.",
-  screenWelcome: "Bem-vindo. Seu próximo endereço começa aqui.",
 };
+
+const LOGO_MARKUP = '<svg viewBox="0 0 452 96"><title>marca</title></svg>';
 
 function makeProperty(id: string, title: string): Property {
   return {
@@ -65,22 +66,19 @@ const properties = [
 
 function mockScroll(overrides: Partial<ReturnType<typeof useJourneyScroll>> = {}) {
   vi.mocked(useJourneyScroll).mockReturnValue({
-    currentImage: undefined,
-    nextImage: undefined,
-    blend: 0,
+    videoRef: { current: null },
     scale: 1,
     previewOpacity: 0,
     zoomProgress: 0,
     walkProgress: 0,
     entryVeil: 1,
-    preloadProgress: 1,
     showFallback: false,
     ...overrides,
   });
 }
 
-function renderSection() {
-  return render(<JourneySection journey={journey} properties={properties} brand={brand} />);
+function renderSection(logoMarkup: string | null = LOGO_MARKUP) {
+  return render(<JourneySection journey={journey} brand={brand} logoMarkup={logoMarkup} />);
 }
 
 beforeEach(() => {
@@ -123,17 +121,45 @@ describe("JourneySection", () => {
     expect(screen.getByTestId("journey-headline").style.opacity).toBe("0");
   });
 
-  it("puts the brand and a scroll cue on the screen, and no photos", () => {
+  it("shows the mark alone on the screen — no second brand line, no photos", () => {
     mockScroll({ previewOpacity: 1 });
     const { container } = renderSection();
     const laptopScreen = screen.getByTestId("journey-screen");
 
-    expect(laptopScreen.querySelector("img")).toHaveAttribute("src", brand.logoUrl);
-    expect(screen.getByText(brand.name)).toBeInTheDocument();
-    expect(screen.getByText(journey.screenWelcome)).toBeInTheDocument();
-    expect(screen.getByText(/role para ver os imóveis/i)).toBeInTheDocument();
+    expect(laptopScreen.querySelector("svg")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: brand.name })).toBeInTheDocument();
+    // The logo already carries the wordmark; repeating it below was the bug.
+    expect(screen.queryByText(brand.name)).not.toBeInTheDocument();
     // Property photos here would be upscaled frames of the footage itself.
-    expect(container.querySelectorAll("img")).toHaveLength(1);
+    expect(container.querySelectorAll("img")).toHaveLength(0);
+  });
+
+  it("keeps the screen out of the zoomed layer so it never rasterises blurred", () => {
+    mockScroll({ scale: 3.4, previewOpacity: 1 });
+    renderSection();
+
+    const zoom = screen.getByTestId("journey-zoom");
+    const laptopScreen = screen.getByTestId("journey-screen");
+    expect(zoom.contains(laptopScreen)).toBe(false);
+  });
+
+  it("grows the screen box by the zoom while holding its centre", () => {
+    mockScroll({ scale: 3, previewOpacity: 1 });
+    renderSection();
+
+    // screenRect 34/24/38x37 at scale 3 -> 114x111 centred on 53%/42.5%
+    const box = screen.getByTestId("journey-screen").style;
+    expect(box.width).toBe("114%");
+    expect(box.height).toBe("111%");
+    expect(box.left).toBe("-4%");
+    expect(box.top).toBe("-13%");
+  });
+
+  it("falls back to the logo file when the client has no inline markup", () => {
+    mockScroll({ previewOpacity: 1 });
+    renderSection(null);
+
+    expect(screen.getByRole("img", { name: brand.name })).toHaveAttribute("src", brand.logoUrl);
   });
 
   it("drops the scroll-jacking entirely when falling back", () => {

@@ -1,9 +1,12 @@
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 import type { ClientBrand, ClientContact } from "@/config/types";
 
 interface SiteFooterProps {
   brand: ClientBrand;
   contact: ClientContact;
+  /** Inline logo markup from `readBrandLogo`; falls back to the file when null. */
+  logoMarkup: string | null;
 }
 
 const NAV_LINKS = [
@@ -12,7 +15,7 @@ const NAV_LINKS = [
   { href: "#depoimentos", label: "Depoimentos" },
 ];
 
-export function SiteFooter({ brand, contact }: SiteFooterProps) {
+export function SiteFooter({ brand, contact, logoMarkup }: SiteFooterProps) {
   const year = new Date().getFullYear();
   const linkClass =
     "text-sand/75 transition-colors hover:text-ivory focus-visible:outline focus-visible:outline-2 focus-visible:outline-brass";
@@ -21,8 +24,12 @@ export function SiteFooter({ brand, contact }: SiteFooterProps) {
     <footer className="border-t border-ivory/10 bg-ink/40">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-4 md:py-16">
         <div className="md:col-span-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={brand.logoUrl} alt={brand.name} className="h-10 w-auto" />
+          <BrandLogo
+            markup={logoMarkup}
+            src={brand.logoUrl}
+            label={brand.name}
+            className="w-48"
+          />
           <p className="mt-4 max-w-sm font-body text-sm leading-relaxed text-sand/75">
             {brand.slogan}
           </p>

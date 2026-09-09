@@ -1,44 +1,40 @@
+import { BrandLogo } from "@/components/ui/BrandLogo";
 import type { ClientBrand } from "@/config/types";
 
 interface JourneyScreenPreviewProps {
   brand: ClientBrand;
-  welcome: string;
+  /** Inline logo markup from `readBrandLogo`, drawn instead of a scaled image. */
+  logoMarkup: string | null;
 }
 
 /**
- * What the laptop screen shows once the zoom lands on it: the agency's mark on
- * a dark screen and a cue that the listings are below. Deliberately typographic
- * — photos here would be the footage's own pixels blown up several times, which
- * is exactly what looked cheap.
+ * What the laptop screen shows once the zoom lands on it: the client's mark, on
+ * the client's own dark. Nothing else — the walkthrough has already said where
+ * the visitor is, and the listings are the next thing they scroll into, so a
+ * second brand line and a scroll prompt were repeating what the page states
+ * twice over.
+ *
+ * Sized in container units so the lockup holds its proportion as the screen
+ * grows from a laptop-sized rectangle to the whole viewport.
  */
-export function JourneyScreenPreview({ brand, welcome }: JourneyScreenPreviewProps) {
+export function JourneyScreenPreview({ brand, logoMarkup }: JourneyScreenPreviewProps) {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center gap-[3cqw] bg-bgDark px-[8%] text-center">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={brand.logoUrl} alt="" aria-hidden="true" className="h-[9cqw] w-auto" />
-
-      <div>
-        <p className="font-display text-[4.2cqw] leading-tight text-ivory">{brand.name}</p>
-        <p className="mt-[1.5cqw] font-body text-[1.7cqw] leading-snug text-sand/80">{welcome}</p>
-      </div>
-
-      <div className="flex flex-col items-center gap-[1cqw] text-brassLight">
-        <span className="font-body text-[1.2cqw] uppercase tracking-[0.35em]">
-          Role para ver os imóveis
-        </span>
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          className="h-[3.4cqw] w-[3.4cqw] motion-safe:animate-bounce"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M6 9l6 6 6-6" />
-        </svg>
-      </div>
+    <div
+      className="flex h-full w-full items-center justify-center overflow-hidden"
+      style={{
+        // A lit panel, not a hole cut in the frame: the glass carries a little
+        // more light at the top than at the bottom, which is what separates a
+        // screen that is on from one that is off.
+        background:
+          "linear-gradient(170deg, rgb(var(--ink-rgb) / 1) 0%, rgb(var(--bg-dark-rgb) / 1) 55%, rgb(var(--bg-dark-rgb) / 1) 100%)",
+      }}
+    >
+      <BrandLogo
+        markup={logoMarkup}
+        src={brand.logoUrl}
+        label={brand.name}
+        className="h-auto w-[58cqw]"
+      />
     </div>
   );
 }

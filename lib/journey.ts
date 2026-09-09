@@ -28,6 +28,37 @@ const ENTRY_FADE_SPAN = 0.22;
 // arrives instead of fading in from nothing.
 const ENTRY_VEIL_MAX = 0.35;
 
+/** Rectangle in % of the frame box, same shape as `JourneyScreenRect`. */
+export interface ScreenBox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+/**
+ * Where the laptop screen lands once the frame has been zoomed by `scale`.
+ *
+ * The screen content cannot ride inside the zoomed element: that element is
+ * promoted to its own compositor layer, so the browser rasterises it once at
+ * its original size and stretches the texture — text and vector art arrive
+ * blurred by the full zoom factor. Laying the screen out at its final size
+ * instead keeps it rendering at 1:1 the whole way.
+ *
+ * The zoom's transform-origin is the screen's own centre, so the centre is
+ * fixed and only the size grows.
+ */
+export function computeScreenBox(rect: ScreenBox, scale: number): ScreenBox {
+  const width = rect.width * scale;
+  const height = rect.height * scale;
+  return {
+    x: rect.x + rect.width / 2 - width / 2,
+    y: rect.y + rect.height / 2 - height / 2,
+    width,
+    height,
+  };
+}
+
 function clamp01(value: number): number {
   return Math.min(Math.max(value, 0), 1);
 }

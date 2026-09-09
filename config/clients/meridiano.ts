@@ -20,16 +20,17 @@ export const clientConfig = {
     fontBody: "Manrope",
   },
   hero: {
-    mode: "frame-sequence",
-    framesPath: "/clients/meridiano/hero-frames/",
-    frameCount: 141,
+    mode: "video",
+    videoSrc: "/clients/meridiano/hero.mp4",
+    posterImage: "/clients/meridiano/hero-poster.webp",
     fallbackImage: "/clients/meridiano/hero-fallback.webp",
-    phases: [{ label: "Aproximação", scrollRange: [0, 1.0] }],
-    autoplayDurationMs: 6000,
+    // O filme tem 5,9s: 0.75 põe o nome no ar por volta dos 4,4s, ou seja
+    // no último segundo e meio, depois que a câmera já assentou no imóvel.
+    titleRevealAt: 0.75,
   },
   journey: {
-    framesPath: "/clients/meridiano/journey-frames/",
-    frameCount: 141,
+    videoSrc: "/clients/meridiano/journey.mp4",
+    posterImage: "/clients/meridiano/journey-poster.webp",
     fallbackImage: "/clients/meridiano/journey-fallback.webp",
     frameAspectRatio: 1366 / 768,
     scrollHeightVh: 320,
@@ -38,13 +39,13 @@ export const clientConfig = {
     // para o conteúdo ficar no vidro e não sobre o bezel.
     screenRect: { x: 34, y: 24, width: 38, height: 37 },
     zoomStartProgress: 0.7,
-    // 3.0 leva a tela do notebook a cobrir a viewport com uma folga pequena;
-    // acima disso o conteúdo passa do necessário e perde nitidez.
+    // 3.0 leva a tela do notebook a cobrir a viewport com uma folga pequena.
+    // A tela é posicionada por layout, fora da camada que escala, então ela
+    // continua nítida em qualquer fator — o limite aqui é de enquadramento.
     zoomScale: 3,
     previewFadeStart: 0.2,
     headline: "Da sala de estar ao seu próximo endereço",
     subheadline: "Percorra o imóvel sem sair daqui — e encontre o seu na tela.",
-    screenWelcome: "Bem-vindo. Seu próximo endereço começa aqui.",
   },
   contact: {
     whatsapp: "5541999999999",
