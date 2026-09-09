@@ -58,7 +58,7 @@ beforeEach(() => {
 describe("PropertyStage", () => {
   it("gives the listing a whole viewport", () => {
     renderStage();
-    expect(screen.getByTestId("property-stage").className).toContain("h-screen");
+    expect(screen.getByTestId("property-stage").className).toContain("h-dvh");
   });
 
   it("shows where this listing sits in the set", () => {
@@ -164,7 +164,7 @@ describe("PropertyShowcase", () => {
   it("holds the screen with an empty state when the filters match nothing", () => {
     renderShowcase([]);
     const empty = screen.getByTestId("showcase-empty");
-    expect(empty.className).toContain("h-screen");
+    expect(empty.className).toContain("h-dvh");
     expect(screen.getByText(/nenhum imóvel para esses filtros/i)).toBeInTheDocument();
   });
 });

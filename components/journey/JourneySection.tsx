@@ -24,7 +24,7 @@ export function JourneySection({ journey, brand, logoMarkup }: JourneySectionPro
 
   if (state.showFallback) {
     return (
-      <section id="jornada" className="relative h-screen w-full overflow-hidden bg-bgDark">
+      <section id="jornada" className="relative h-dvh w-full overflow-hidden bg-bgDark">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={journey.fallbackImage}
@@ -64,7 +64,11 @@ export function JourneySection({ journey, brand, logoMarkup }: JourneySectionPro
       style={{ height: `${journey.scrollHeightVh}vh` }}
       className="relative bg-bgDark"
     >
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+      {/* svh, not dvh: this box is the pin/scrub region, held under an active
+          scroll gesture. dvh would resize it — and jolt the frame mid-scrub —
+          every time the mobile browser's chrome shows or hides. svh is fixed
+          to the chrome-visible case, so it never moves once the pin starts. */}
+      <div className="sticky top-0 h-svh w-full overflow-hidden">
         {/* Frame box locked to the footage's aspect ratio and sized to cover the
             viewport, so the screen overlay stays in register at any window shape. */}
         <div
