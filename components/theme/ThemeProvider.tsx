@@ -11,7 +11,7 @@ export function ThemeProvider({ theme, children }: ThemeProviderProps) {
   const cssVars = buildThemeCssVars(theme) as CSSProperties;
 
   return (
-    <div style={cssVars} className="min-h-screen bg-bgDark font-body text-ivory">
+    <div style={cssVars} className="min-h-dvh bg-bgDark font-body text-ivory">
       {children}
     </div>
   );

@@ -27,7 +27,7 @@ export function PropertyShowcase({
     return (
       <div
         data-testid="showcase-empty"
-        className="flex h-screen snap-start flex-col items-center justify-center gap-3 px-6 text-center"
+        className="flex h-dvh snap-start flex-col items-center justify-center gap-3 px-6 text-center"
       >
         <p className="font-display text-2xl text-ivory md:text-3xl">
           Nenhum imóvel para esses filtros

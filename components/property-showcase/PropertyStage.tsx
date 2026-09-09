@@ -59,7 +59,7 @@ export const PropertyStage = forwardRef<HTMLElement, PropertyStageProps>(functio
         event.preventDefault();
         step(event.key === "ArrowRight" ? 1 : -1);
       }}
-      className="relative h-screen w-full overflow-hidden bg-bgDark focus:outline-none"
+      className="relative h-dvh w-full overflow-hidden bg-bgDark focus:outline-none"
     >
       {property.photos.map((src, index) => (
         <Image

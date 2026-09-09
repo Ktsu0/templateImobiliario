@@ -33,7 +33,7 @@ export function HeroSection({ brand, hero }: HeroSectionProps) {
     : "pointer-events-none translate-y-6 opacity-0";
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative h-dvh w-full overflow-hidden">
       <HeroVideo
         videoRef={intro.videoRef}
         videoSrc={hero.videoSrc}
