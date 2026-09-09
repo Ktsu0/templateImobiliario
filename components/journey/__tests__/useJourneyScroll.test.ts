@@ -1,21 +1,19 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { renderHook } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { renderHook, act } from "@testing-library/react";
 import { createRef } from "react";
 import type { ClientJourney } from "@/config/types";
 
 vi.mock("@/hooks/useMediaQuery", () => ({ useMediaQuery: vi.fn() }));
 vi.mock("@/hooks/useConnectionType", () => ({ useConnectionType: vi.fn(() => undefined) }));
-vi.mock("@/hooks/useFramePreloader", () => ({ useFramePreloader: vi.fn() }));
 vi.mock("@/hooks/useSectionScrollProgress", () => ({ useSectionScrollProgress: vi.fn(() => 0) }));
 
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useFramePreloader } from "@/hooks/useFramePreloader";
 import { useSectionScrollProgress } from "@/hooks/useSectionScrollProgress";
 import { useJourneyScroll } from "@/components/journey/useJourneyScroll";
 
 const journey: ClientJourney = {
-  framesPath: "/journey/",
-  frameCount: 90,
+  videoSrc: "/journey.mp4",
+  posterImage: "/journey-poster.webp",
   fallbackImage: "/journey-fallback.webp",
   frameAspectRatio: 1366 / 768,
   scrollHeightVh: 320,
@@ -24,55 +22,96 @@ const journey: ClientJourney = {
   zoomScale: 3.4,
   headline: "Headline",
   subheadline: "Sub",
-  screenWelcome: "Bem-vindo",
 };
 
-const images = Array.from({ length: 90 }, () => new Image());
+const DURATION = 5.88;
 const sectionRef = createRef<HTMLElement>();
+
+/** jsdom has no media pipeline, so the element is a plain stand-in with a
+ *  writable currentTime and a duration the hook can map progress onto. */
+function attachVideo(ref: { current: HTMLVideoElement | null }) {
+  const video = document.createElement("video");
+  Object.defineProperty(video, "duration", { value: DURATION, configurable: true });
+  ref.current = video;
+  return video;
+}
+
+let rafQueue: FrameRequestCallback[] = [];
 
 beforeEach(() => {
   vi.clearAllMocks();
+  rafQueue = [];
+  vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) => {
+    rafQueue.push(cb);
+    return rafQueue.length;
+  });
+  vi.stubGlobal("cancelAnimationFrame", () => {});
   vi.mocked(useMediaQuery).mockReturnValue(false);
   vi.mocked(useSectionScrollProgress).mockReturnValue(0);
-  vi.mocked(useFramePreloader).mockReturnValue({
-    images,
-    loadedCount: 90,
-    progress: 1,
-    isComplete: true,
-  });
 });
 
-describe("useJourneyScroll", () => {
-  it("requests the frames only after deciding to play", () => {
-    renderHook(() => useJourneyScroll(sectionRef, journey));
-    const counts = vi.mocked(useFramePreloader).mock.calls.map((call) => call[1]);
-    expect(counts[0]).toBe(0);
-    expect(counts[counts.length - 1]).toBe(90);
-  });
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
-  it("walks the frames while scrolling before the zoom threshold", () => {
+function flushFrames() {
+  act(() => {
+    const queued = rafQueue;
+    rafQueue = [];
+    for (const cb of queued) cb(0);
+  });
+}
+
+describe("useJourneyScroll", () => {
+  it("walks without zooming before the threshold", () => {
     vi.mocked(useSectionScrollProgress).mockReturnValue(0.35);
     const { result } = renderHook(() => useJourneyScroll(sectionRef, journey));
-    // half of the walk phase -> frame 44 of 90
-    expect(result.current.currentImage).toBe(images[44]);
+
+    // Half of the walk phase (0.35 of a 0.7 threshold).
+    expect(result.current.walkProgress).toBeCloseTo(0.5);
     expect(result.current.scale).toBe(1);
     expect(result.current.previewOpacity).toBe(0);
   });
 
-  it("holds the last frame and zooms once past the threshold", () => {
+  it("seeks the video to the walk position on an animation frame", () => {
+    const { result, rerender } = renderHook(() => useJourneyScroll(sectionRef, journey));
+    const video = attachVideo(result.current.videoRef);
+
+    vi.mocked(useSectionScrollProgress).mockReturnValue(0.35);
+    rerender();
+    flushFrames();
+
+    // Half the walk, held just inside the end of the timeline.
+    expect(video.currentTime).toBeCloseTo(0.5 * (DURATION - 0.04), 2);
+  });
+
+  it("coalesces a burst of scroll updates into a single seek", () => {
+    const { result, rerender } = renderHook(() => useJourneyScroll(sectionRef, journey));
+    const video = attachVideo(result.current.videoRef);
+
+    for (const progress of [0.1, 0.2, 0.3, 0.4, 0.5]) {
+      vi.mocked(useSectionScrollProgress).mockReturnValue(progress);
+      rerender();
+    }
+    expect(rafQueue).toHaveLength(1);
+    flushFrames();
+
+    // Only the newest position is applied; the stale ones never reach the decoder.
+    expect(video.currentTime).toBeCloseTo(((0.5 / 0.7) * (DURATION - 0.04)), 2);
+  });
+
+  it("holds the closing frame and zooms once past the threshold", () => {
     vi.mocked(useSectionScrollProgress).mockReturnValue(1);
     const { result } = renderHook(() => useJourneyScroll(sectionRef, journey));
-    expect(result.current.currentImage).toBe(images[89]);
+
+    expect(result.current.walkProgress).toBe(1);
     expect(result.current.scale).toBeCloseTo(3.4);
     expect(result.current.previewOpacity).toBe(1);
   });
 
-  it("falls back without downloading frames under reduced motion", () => {
+  it("falls back to the still under reduced motion", () => {
     vi.mocked(useMediaQuery).mockReturnValue(true);
     const { result } = renderHook(() => useJourneyScroll(sectionRef, journey));
     expect(result.current.showFallback).toBe(true);
-    for (const call of vi.mocked(useFramePreloader).mock.calls) {
-      expect(call[1]).toBe(0);
-    }
   });
 });

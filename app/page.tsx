@@ -1,10 +1,11 @@
-import { HeroFrameSequence } from "@/components/hero-frame-sequence/HeroFrameSequence";
+import { HeroSection } from "@/components/hero/HeroSection";
 import { JourneySection } from "@/components/journey/JourneySection";
-import { PropertyListingSection } from "@/components/property-grid/PropertyListingSection";
+import { PropertyListingSection } from "@/components/property-showcase/PropertyListingSection";
 import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
 import { SiteFooter } from "@/components/footer/SiteFooter";
 import { Reveal } from "@/components/ui/Reveal";
 import { activeClientConfig } from "@/config/active-client";
+import { readBrandLogo } from "@/lib/brand-logo";
 import { getProperties } from "@/lib/content/properties";
 import { getTestimonials } from "@/lib/content/testimonials";
 
@@ -12,24 +13,25 @@ export default function HomePage() {
   const properties = getProperties();
   const testimonials = getTestimonials();
   const { brand, hero, journey, contact } = activeClientConfig;
+  // Read once here, on the server, so both the laptop screen and the footer
+  // draw the logo as vector instead of scaling an image of it.
+  const logoMarkup = readBrandLogo(brand.logoUrl);
 
   return (
     <>
       <main>
-        <HeroFrameSequence brand={brand} hero={hero} />
+        <HeroSection brand={brand} hero={hero} />
 
-        {journey && <JourneySection journey={journey} brand={brand} />}
+        {journey && (
+          <JourneySection journey={journey} brand={brand} logoMarkup={logoMarkup} />
+        )}
 
-        {/* Everything past the two videos fades up on approach. */}
-        <section id="imoveis" className="mx-auto max-w-6xl px-6 py-20 md:py-24">
-          <Reveal>
-            <h2 className="font-display text-3xl text-ivory md:text-4xl">Imóveis em destaque</h2>
-          </Reveal>
-          <Reveal delayMs={120}>
-            <div className="mt-8">
-              <PropertyListingSection properties={properties} whatsappNumber={contact.whatsapp} />
-            </div>
-          </Reveal>
+        {/* Full bleed: each listing takes a viewport of its own, so there is no
+            column to sit inside and no heading strip to cost a screen. The
+            heading stays for structure and screen readers. */}
+        <section id="imoveis" className="relative">
+          <h2 className="sr-only">Imóveis</h2>
+          <PropertyListingSection properties={properties} whatsappNumber={contact.whatsapp} />
         </section>
 
         <Reveal>
@@ -38,7 +40,7 @@ export default function HomePage() {
       </main>
 
       <Reveal>
-        <SiteFooter brand={brand} contact={contact} />
+        <SiteFooter brand={brand} contact={contact} logoMarkup={logoMarkup} />
       </Reveal>
     </>
   );

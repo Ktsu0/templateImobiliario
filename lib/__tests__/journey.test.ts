@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeJourneyStage } from "@/lib/journey";
+import { computeJourneyStage, computeScreenBox } from "@/lib/journey";
 
 const config = { zoomStartProgress: 0.7, zoomScale: 3.4 };
 
@@ -81,5 +81,30 @@ describe("computeJourneyStage", () => {
   it("treats a zero-length walk phase as immediately finished", () => {
     const stage = computeJourneyStage(0, { zoomStartProgress: 0, zoomScale: 3 });
     expect(stage.walkProgress).toBe(1);
+  });
+});
+
+describe("computeScreenBox", () => {
+  const rect = { x: 34, y: 24, width: 38, height: 37 };
+
+  it("returns the screen untouched before the zoom starts", () => {
+    expect(computeScreenBox(rect, 1)).toEqual(rect);
+  });
+
+  it("grows the box by the zoom factor", () => {
+    const box = computeScreenBox(rect, 3);
+    expect(box.width).toBeCloseTo(114);
+    expect(box.height).toBeCloseTo(111);
+  });
+
+  it("holds the screen's centre fixed, matching the zoom's transform-origin", () => {
+    const centreX = rect.x + rect.width / 2;
+    const centreY = rect.y + rect.height / 2;
+
+    for (const scale of [1, 1.7, 3, 4.2]) {
+      const box = computeScreenBox(rect, scale);
+      expect(box.x + box.width / 2).toBeCloseTo(centreX);
+      expect(box.y + box.height / 2).toBeCloseTo(centreY);
+    }
   });
 });

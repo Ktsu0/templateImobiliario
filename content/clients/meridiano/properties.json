@@ -13,9 +13,9 @@
     "status": "exclusivo",
     "featured": true,
     "photos": [
-      "/clients/meridiano/photos/casa-1.webp",
-      "/clients/meridiano/photos/casa-4.webp",
-      "/clients/meridiano/photos/casa-6.webp"
+      "/clients/meridiano/photos/p1-a.webp",
+      "/clients/meridiano/photos/p1-b.webp",
+      "/clients/meridiano/photos/p1-c.webp"
     ]
   },
   {
@@ -32,9 +32,9 @@
     "status": "aluguel",
     "featured": false,
     "photos": [
-      "/clients/meridiano/photos/casa-2.webp",
-      "/clients/meridiano/photos/casa-5.webp",
-      "/clients/meridiano/photos/casa-7.webp"
+      "/clients/meridiano/photos/p2-a.webp",
+      "/clients/meridiano/photos/p2-b.webp",
+      "/clients/meridiano/photos/p2-c.webp"
     ]
   },
   {
@@ -51,9 +51,9 @@
     "status": "venda",
     "featured": false,
     "photos": [
-      "/clients/meridiano/photos/casa-3.webp",
-      "/clients/meridiano/photos/casa-6.webp",
-      "/clients/meridiano/photos/casa-8.webp"
+      "/clients/meridiano/photos/p3-a.webp",
+      "/clients/meridiano/photos/p3-b.webp",
+      "/clients/meridiano/photos/p3-c.webp"
     ]
   },
   {
@@ -70,9 +70,9 @@
     "status": "lancamento",
     "featured": false,
     "photos": [
-      "/clients/meridiano/photos/casa-4.webp",
-      "/clients/meridiano/photos/casa-7.webp",
-      "/clients/meridiano/photos/casa-1.webp"
+      "/clients/meridiano/photos/p4-a.webp",
+      "/clients/meridiano/photos/p4-b.webp",
+      "/clients/meridiano/photos/p4-c.webp"
     ]
   },
   {
@@ -89,9 +89,9 @@
     "status": "aluguel",
     "featured": false,
     "photos": [
-      "/clients/meridiano/photos/casa-5.webp",
-      "/clients/meridiano/photos/casa-8.webp",
-      "/clients/meridiano/photos/casa-2.webp"
+      "/clients/meridiano/photos/p5-a.webp",
+      "/clients/meridiano/photos/p5-b.webp",
+      "/clients/meridiano/photos/p5-c.webp"
     ]
   },
   {
@@ -108,9 +108,9 @@
     "status": "venda",
     "featured": false,
     "photos": [
-      "/clients/meridiano/photos/casa-6.webp",
-      "/clients/meridiano/photos/casa-1.webp",
-      "/clients/meridiano/photos/casa-3.webp"
+      "/clients/meridiano/photos/p6-a.webp",
+      "/clients/meridiano/photos/p6-b.webp",
+      "/clients/meridiano/photos/p6-c.webp"
     ]
   },
   {
@@ -127,9 +127,9 @@
     "status": "venda",
     "featured": false,
     "photos": [
-      "/clients/meridiano/photos/casa-7.webp",
-      "/clients/meridiano/photos/casa-2.webp",
-      "/clients/meridiano/photos/casa-4.webp"
+      "/clients/meridiano/photos/p7-a.webp",
+      "/clients/meridiano/photos/p7-b.webp",
+      "/clients/meridiano/photos/p7-c.webp"
     ]
   },
   {
@@ -146,9 +146,9 @@
     "status": "aluguel",
     "featured": false,
     "photos": [
-      "/clients/meridiano/photos/casa-8.webp",
-      "/clients/meridiano/photos/casa-3.webp",
-      "/clients/meridiano/photos/casa-5.webp"
+      "/clients/meridiano/photos/p8-a.webp",
+      "/clients/meridiano/photos/p8-b.webp",
+      "/clients/meridiano/photos/p8-c.webp"
     ]
   }
 ]

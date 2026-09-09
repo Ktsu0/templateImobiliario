@@ -1,23 +1,26 @@
 "use client";
 import { useRef } from "react";
 import { useJourneyScroll } from "./useJourneyScroll";
-import { JourneyCanvas } from "./JourneyCanvas";
+import { JourneyVideo } from "./JourneyVideo";
 import { JourneyScreenPreview } from "./JourneyScreenPreview";
-import { FramePreloader } from "@/components/hero-frame-sequence/FramePreloader";
+import { computeScreenBox } from "@/lib/journey";
 import type { ClientBrand, ClientJourney } from "@/config/types";
 import type { Property } from "@/lib/content/types";
 
 interface JourneySectionProps {
   journey: ClientJourney;
   brand: ClientBrand;
+  /** Inline logo markup from `readBrandLogo`, drawn on the laptop screen. */
+  logoMarkup: string | null;
 }
 
-export function JourneySection({ journey, brand }: JourneySectionProps) {
+export function JourneySection({ journey, brand, logoMarkup }: JourneySectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const state = useJourneyScroll(sectionRef, journey);
 
   const screenCenterX = journey.screenRect.x + journey.screenRect.width / 2;
   const screenCenterY = journey.screenRect.y + journey.screenRect.height / 2;
+  const screenBox = computeScreenBox(journey.screenRect, state.scale);
 
   if (state.showFallback) {
     return (
@@ -79,26 +82,32 @@ export function JourneySection({ journey, brand }: JourneySectionProps) {
               transformOrigin: `${screenCenterX}% ${screenCenterY}%`,
             }}
           >
-            <JourneyCanvas
-              currentImage={state.currentImage}
-              nextImage={state.nextImage}
-              blend={state.blend}
+            <JourneyVideo
+              videoRef={state.videoRef}
+              videoSrc={journey.videoSrc}
+              posterImage={journey.posterImage}
             />
+          </div>
 
-            <div
-              data-testid="journey-screen"
-              className="absolute overflow-hidden"
-              style={{
-                left: `${journey.screenRect.x}%`,
-                top: `${journey.screenRect.y}%`,
-                width: `${journey.screenRect.width}%`,
-                height: `${journey.screenRect.height}%`,
-                opacity: state.previewOpacity,
-                containerType: "inline-size",
-              }}
-            >
-              <JourneyScreenPreview brand={brand} welcome={journey.screenWelcome} />
-            </div>
+          {/* Deliberately a sibling of the zoomed element, not a child. That
+              element is composited on its own layer and its texture is
+              stretched by the zoom, which would hand the screen a logo blurred
+              3x. Here the screen is laid out at the size the zoom has reached,
+              so it draws at 1:1 throughout. `computeScreenBox` is the same
+              transform, resolved in layout instead of on the compositor. */}
+          <div
+            data-testid="journey-screen"
+            className="absolute overflow-hidden"
+            style={{
+              left: `${screenBox.x}%`,
+              top: `${screenBox.y}%`,
+              width: `${screenBox.width}%`,
+              height: `${screenBox.height}%`,
+              opacity: state.previewOpacity,
+              containerType: "inline-size",
+            }}
+          >
+            <JourneyScreenPreview brand={brand} logoMarkup={logoMarkup} />
           </div>
         </div>
 
@@ -112,7 +121,20 @@ export function JourneySection({ journey, brand }: JourneySectionProps) {
           style={{ opacity: state.entryVeil }}
         />
 
-        <FramePreloader progress={state.preloadProgress} />
+        {/* The same black gradient the hero carries. Without it the headline
+            sat on raw footage and measured 2.10:1 against the brightest frame;
+            anchored to the bottom it only touches the strip the words occupy
+            and leaves the walk itself alone. */}
+        <div
+          data-testid="journey-scrim"
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to top, rgb(var(--bg-dark-rgb) / 0.92) 0%, rgb(var(--bg-dark-rgb) / 0.5) 18%, rgb(var(--bg-dark-rgb) / 0.12) 38%, transparent 60%)",
+            opacity: 1 - state.zoomProgress,
+          }}
+        />
 
         <div
           data-testid="journey-headline"

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { activeClientConfig } from "@/config/active-client";
 import { buildGoogleFontsUrl } from "@/lib/theme";
+import "lenis/dist/lenis.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,7 +21,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link rel="stylesheet" href={buildGoogleFontsUrl(activeClientConfig.theme)} />
       </head>
       <body>
-        <ThemeProvider theme={activeClientConfig.theme}>{children}</ThemeProvider>
+        <SmoothScroll>
+          <ThemeProvider theme={activeClientConfig.theme}>{children}</ThemeProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

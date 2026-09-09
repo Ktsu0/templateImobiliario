@@ -22,14 +22,14 @@ const contact: ClientContact = {
 
 describe("SiteFooter", () => {
   it("shows the agency's identity and registration", () => {
-    render(<SiteFooter brand={brand} contact={contact} />);
+    render(<SiteFooter brand={brand} contact={contact} logoMarkup={null} />);
     expect(screen.getByRole("img", { name: brand.name })).toHaveAttribute("src", brand.logoUrl);
     expect(screen.getByText(brand.creci)).toBeInTheDocument();
     expect(screen.getByText(brand.slogan)).toBeInTheDocument();
   });
 
   it("makes every contact route actionable", () => {
-    render(<SiteFooter brand={brand} contact={contact} />);
+    render(<SiteFooter brand={brand} contact={contact} logoMarkup={null} />);
 
     expect(screen.getByRole("link", { name: "WhatsApp" })).toHaveAttribute(
       "href",
@@ -48,7 +48,7 @@ describe("SiteFooter", () => {
   });
 
   it("lists the configured social profiles and the privacy policy", () => {
-    render(<SiteFooter brand={brand} contact={contact} />);
+    render(<SiteFooter brand={brand} contact={contact} logoMarkup={null} />);
     expect(screen.getByRole("link", { name: "Instagram" })).toHaveAttribute(
       "href",
       "https://instagram.com"
@@ -57,7 +57,7 @@ describe("SiteFooter", () => {
   });
 
   it("links back to the sections of the page", () => {
-    render(<SiteFooter brand={brand} contact={contact} />);
+    render(<SiteFooter brand={brand} contact={contact} logoMarkup={null} />);
     expect(screen.getByRole("link", { name: /imóveis/i })).toHaveAttribute("href", "#imoveis");
     expect(screen.getByRole("link", { name: /depoimentos/i })).toHaveAttribute("href", "#depoimentos");
   });

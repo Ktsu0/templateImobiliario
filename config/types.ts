@@ -17,18 +17,19 @@ export interface ClientTheme {
   fontBody: string;
 }
 
-export interface HeroPhase {
-  label: string;
-  scrollRange: [number, number];
-}
-
 export interface ClientHero {
-  mode: "frame-sequence" | "static-image";
-  framesPath: string;
-  frameCount: number;
+  mode: "video" | "static-image";
+  /** The client's intro film. Played straight through, once, muted. */
+  videoSrc: string;
+  /** First frame of that film, shown until it has enough data to start. */
+  posterImage: string;
+  /** Still used instead of the film under reduced motion or a slow connection. */
   fallbackImage: string;
-  phases: HeroPhase[];
-  autoplayDurationMs?: number;
+  /**
+   * Fraction of the film after which the brand title reveals (0-1). The reveal
+   * belongs to the closing seconds, once the camera has settled.
+   */
+  titleRevealAt: number;
 }
 
 /** Rectangle of the laptop screen in the final journey frame, in % of the frame. */
@@ -40,10 +41,14 @@ export interface JourneyScreenRect {
 }
 
 export interface ClientJourney {
-  framesPath: string;
-  frameCount: number;
+  /**
+   * The walkthrough. Scrubbed by scroll rather than played, so it is encoded
+   * all-intra — see `scripts/build-client-media.ts`.
+   */
+  videoSrc: string;
+  posterImage: string;
   fallbackImage: string;
-  /** width / height of the source frames, so the overlay stays in register. */
+  /** width / height of the footage, so the screen overlay stays in register. */
   frameAspectRatio: number;
   scrollHeightVh: number;
   screenRect: JourneyScreenRect;
@@ -53,8 +58,6 @@ export interface ClientJourney {
   previewFadeStart?: number;
   headline: string;
   subheadline: string;
-  /** Welcome line shown on the laptop screen, above the offers. */
-  screenWelcome: string;
 }
 
 export interface SocialLink {
