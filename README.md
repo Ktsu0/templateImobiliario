@@ -1,7 +1,14 @@
-# Template Imobiliário Configurável
+# Template Imobiliario Configuravel
 
-Esqueleto Next.js config-driven para imobiliárias. Cada cliente é um deploy separado
-apontando para um `clientConfig` — nenhum componente contém marca, cor ou conteúdo fixo.
+Esqueleto Next.js config-driven para sites de imobiliarias: hero em video, secao de jornada controlada por scroll e vitrine de imoveis. Cada cliente e um deploy separado apontando para um clientConfig proprio - nenhum componente tem marca, cor ou conteudo fixo, entao um site novo sai duplicando um arquivo de configuracao.
+
+**Demo:** https://template-imobiliario-swart.vercel.app
+
+## Tecnologias
+
+- Next.js
+- TypeScript
+- Video otimizado (hero e jornada scroll-driven) processado via ffmpeg
 
 ## Rodando localmente
 
