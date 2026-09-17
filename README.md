@@ -29,20 +29,22 @@ originais, por um script só:
 
     npm run build:meridiano-media -- <hero.mp4> <jornada.mp4>
 
-Os dois são codificados de formas diferentes porque são tocados de formas diferentes:
-
-- **`hero.mp4`** roda do começo ao fim, então o bitstream do master passa **copiado**, sem
-  reencode e sem perda de geração (~2 MB).
-- **`journey.mp4`** é arrastado pelo scroll, ou seja, busca um quadro arbitrário várias
-  vezes por segundo. Vai **all-intra** (`-g 1`): todo quadro é keyframe e nenhuma busca
-  precisa decodificar uma cadeia até chegar lá. Isso dobra o tamanho (~5,3 MB) e é o que
-  compra um scrub que não engasga.
+Os dois masters passam **copiados** (`-c:v copy`), sem reencode e sem perda de geração. O
+`journey.mp4` já foi reencodado all-intra para um scrub feito na mão com `currentTime`
+conseguir buscar qualquer quadro; isso custava uma geração de qualidade e dobrava o
+arquivo. Hoje ele é tocado pelo [`scrolly-video`](https://github.com/dkaoster/scrolly-video),
+que decodifica o stream original via WebCodecs onde dá e modula o `playbackRate` onde não
+dá — então o bitstream do master é tudo de que ele precisa.
 
 Os dois levam `+faststart`, que põe o índice na frente para a reprodução começar nos
 primeiros bytes em vez de esperar o arquivo inteiro.
 
 Posters e fallbacks são recortados de frames sem perda dos mesmos masters. O poster **tem**
 que ser o primeiro quadro, senão a imagem pula visivelmente quando o vídeo começa.
+
+**Os dois filmes precisam se emendar.** O último quadro do hero tem que ser o primeiro
+quadro da jornada (mesmo enquadramento, mesma luz): é isso que permite trocar um pelo
+outro no lugar, sem corte visível, no instante em que o visitante começa a rolar.
 
 Isso substituiu uma versão que servia ~140 stills WebP por sequência, decodificados e
 desenhados num canvas por JS: custava 23 MB e o hero só aparecia depois de baixar tudo.
@@ -54,26 +56,18 @@ upscaler de vídeo por IA antes desta etapa, ou refilmar em alta.
 
 ## Jornada (segundo vídeo, controlado por scroll)
 
-`clientConfig.journey` liga a seção que fica entre o hero e os imóveis: uma caminhada pelo
-interior, frame a frame conforme o scroll, que termina com um zoom na tela do notebook onde
-as ofertas aparecem.
+Com `clientConfig.journey` definido, hero e jornada viram **um palco só**, fixo na viewport
+(`ExperienceSection`). O filme do hero roda sozinho e termina com o nome da imobiliária no
+ar. Na primeira rolada, o cartão some e a jornada assume os mesmos pixels — o primeiro
+quadro dela é o último dele, então não há corte. Dali em diante o scroll arrasta a
+caminhada até o fim, e a seção solta direto nos imóveis.
 
-O filme fica em `public/clients/<slug>/journey.mp4` e o último quadro também é gravado como
-`journey-fallback.webp` — tudo produzido pelo script da seção acima.
+O filme fica em `public/clients/<slug>/journey.mp4`, produzido pelo script da seção acima.
+O único ajuste é `scrollHeightVh`: quanto de scroll a caminhada ocupa (320 costuma bastar
+para um filme de ~10 s).
 
-O ajuste que exige medição é o `screenRect`: onde fica a tela do notebook **no último frame**,
-em % do quadro. Para medir, abra o último frame num editor de imagem, selecione a área preta
-da tela e converta para porcentagem (`x / largura * 100`, `y / altura * 100`). Depois ajuste:
-
-- `zoomScale` — quanto o quadro cresce até a tela cobrir a viewport (3 costuma bastar).
-- `zoomStartProgress` — fração do scroll gasta caminhando antes do zoom começar.
-- `previewFadeStart` — em que ponto do zoom a tela "liga" e mostra a marca.
-
-A tela do notebook é posicionada por layout (`computeScreenBox`), fora do elemento
-que sofre o `transform: scale`. Isso é deliberado: aquele elemento vira uma camada
-de composição própria, que o navegador rasteriza uma vez no tamanho original e
-depois estica — qualquer texto ou vetor dentro dele chegaria borrado pelo fator do
-zoom. Não mova a tela para dentro do `journey-zoom`.
+Sob `prefers-reduced-motion` ou numa conexão que não daria para bufferizar a caminhada, a
+seção deixa de fixar e de ocupar scroll: fica só o hero, com o CTA indo direto aos imóveis.
 
 ## Imóveis do cliente demo
 

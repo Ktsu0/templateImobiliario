@@ -1,5 +1,5 @@
 import { HeroSection } from "@/components/hero/HeroSection";
-import { JourneySection } from "@/components/journey/JourneySection";
+import { ExperienceSection } from "@/components/experience/ExperienceSection";
 import { PropertyListingSection } from "@/components/property-showcase/PropertyListingSection";
 import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
 import { SiteFooter } from "@/components/footer/SiteFooter";
@@ -13,17 +13,17 @@ export default function HomePage() {
   const properties = getProperties();
   const testimonials = getTestimonials();
   const { brand, hero, journey, contact } = activeClientConfig;
-  // Read once here, on the server, so both the laptop screen and the footer
-  // draw the logo as vector instead of scaling an image of it.
+  // Read once here, on the server, so the footer draws the logo as vector
+  // instead of scaling an image of it.
   const logoMarkup = readBrandLogo(brand.logoUrl);
 
   return (
     <>
       <main>
-        <HeroSection brand={brand} hero={hero} />
-
-        {journey && (
-          <JourneySection journey={journey} brand={brand} logoMarkup={logoMarkup} />
+        {journey ? (
+          <ExperienceSection brand={brand} hero={hero} journey={journey} />
+        ) : (
+          <HeroSection brand={brand} hero={hero} />
         )}
 
         {/* Full bleed: each listing takes a viewport of its own, so there is no

@@ -6,15 +6,12 @@
  * whole download before its first frame. The browser already has a hardware
  * decoder for exactly this, so the videos ship as videos.
  *
- * The two are encoded differently because they are played differently:
- *
- * - The hero plays start to finish, so its master bitstream is copied through
- *   untouched — no re-encode, no generation loss, ~2 MB.
- * - The walkthrough is scrubbed by the scroll position, which means seeking to
- *   an arbitrary frame many times a second. It is encoded all-intra (`-g 1`)
- *   so every frame is a keyframe and a seek never decodes a chain. That roughly
- *   doubles its size against a normal GOP and is what buys a scrub that does
- *   not stutter.
+ * Both masters are copied through untouched — no re-encode, no generation
+ * loss. The walkthrough used to be re-encoded all-intra so a hand-rolled
+ * `currentTime` scrub could seek to any frame cheaply; that cost a generation
+ * of quality and doubled the file. It is now played by `scrolly-video`, which
+ * decodes the original stream through WebCodecs where it can and modulates
+ * playbackRate where it can't, so the master's own bitstream is all it needs.
  *
  * Stills (posters, reduced-motion fallbacks, property photos) are cut from
  * lossless frames of the same masters.
@@ -48,8 +45,6 @@ interface Sequence {
   posterFrame: number;
   /** 1-based frame used as the reduced-motion / slow-connection still. */
   fallbackFrame: number;
-  /** All-intra costs size and buys seek accuracy; only the scrubbed one needs it. */
-  scrubbed: boolean;
 }
 
 interface PhotoCut {
@@ -60,13 +55,12 @@ interface PhotoCut {
 }
 
 /** The photos are 16:9 cuts of the same footage — the shape of the stage
- *  they fill. The hero master is 4:3 and gives up its top and bottom. */
+ *  they fill. Both masters (CasaFora / CasaDentro) are native 1280x720, so
+ *  the "crop" is really just the full frame. */
 const PHOTO_SIZE = { width: 2048, height: 1152 };
 const PHOTO_CROPS: Record<string, { left: number; top: number; width: number; height: number }> = {
-  // 16:9, matching the full-viewport stage each photo now fills. The old 4:3
-  // cut was sized for a card and lost the sides of the frame here.
-  hero: { left: 0, top: 96, width: 1024, height: 576 },
-  journey: { left: 0, top: 0, width: 1366, height: 768 },
+  hero: { left: 0, top: 0, width: 1280, height: 720 },
+  journey: { left: 0, top: 0, width: 1280, height: 720 },
 };
 
 const PHOTOS: PhotoCut[] = [
@@ -113,19 +107,11 @@ function extractFrames(video: string, into: string): number {
   return readdirSync(into).length;
 }
 
-function encodeVideo(source: string, target: string, scrubbed: boolean): void {
-  const codec = scrubbed
-    ? // Every frame a keyframe: the scroll seeks to arbitrary times and must
-      // not wait on a decode chain to reach them.
-      ["-c:v", "libx264", "-g", "1", "-keyint_min", "1", "-sc_threshold", "0",
-       "-crf", "19", "-preset", "slow", "-pix_fmt", "yuv420p"]
-    : // Played straight through, so the master's own bitstream is kept as-is.
-      ["-c:v", "copy"];
-
-  // -an: neither master carries audio, and an empty track only adds a stream.
-  // +faststart moves the index to the front so playback can begin on the first
-  // bytes instead of after the whole file has arrived.
-  ffmpeg(["-i", source, "-an", ...codec, "-movflags", "+faststart", target, "-y"]);
+function encodeVideo(source: string, target: string): void {
+  // -an: the films carry no audio worth shipping, and a track only adds a
+  // stream. +faststart moves the index to the front so playback can begin on
+  // the first bytes instead of after the whole file has arrived.
+  ffmpeg(["-i", source, "-an", "-c:v", "copy", "-movflags", "+faststart", target, "-y"]);
 }
 
 async function encodeStill(
@@ -150,7 +136,7 @@ const mb = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
 
 async function buildSequence(sequence: Sequence, framesDir: string): Promise<void> {
   const video = path.join(PUBLIC_DIR, `${sequence.name}.mp4`);
-  encodeVideo(sequence.video, video, sequence.scrubbed);
+  encodeVideo(sequence.video, video);
 
   const count = extractFrames(sequence.video, framesDir);
   const frame = (n: number) => path.join(framesDir, `${String(n).padStart(3, "0")}.png`);
@@ -169,8 +155,7 @@ async function buildSequence(sequence: Sequence, framesDir: string): Promise<voi
   }
 
   console.log(
-    `${sequence.name}: ${mb(statSync(video).size)} MB video ` +
-      `(${sequence.scrubbed ? "all-intra, scrubbed" : "stream copy"}), ` +
+    `${sequence.name}: ${mb(statSync(video).size)} MB video (stream copy), ` +
       `${count} frames read for stills`
   );
 }
@@ -210,23 +195,26 @@ async function main(): Promise<void> {
       {
         name: "hero",
         video: heroVideo,
-        // The master is 4:3; the hero frames the centred 16:9 band of it, which
-        // `object-cover` reproduces at runtime. The stills are cut to match.
-        crop: { left: 0, top: 96, width: 1024, height: 576 },
+        // The master is already 16:9 (1280x720) — no crop needed, `object-cover`
+        // shows the whole frame.
         stillSize: { width: 2048, height: 1152 },
         posterFrame: 1,
-        fallbackFrame: 71,
-        scrubbed: false,
+        // A representative moment on the facade, still wide enough to read as
+        // the house rather than a close-up of the door.
+        fallbackFrame: 60,
       },
       {
         name: "journey",
         video: journeyVideo,
         stillSize: { width: 2049, height: 1152 },
+        // The poster has to be the first frame: it is what shows in the beat
+        // before the engine paints, and that frame is also the one the hero
+        // film ends on — so the hand-off holds even before playback starts.
         posterFrame: 1,
-        // The walkthrough ends on the laptop; the fallback still has to be that
-        // frame, because `screenRect` in the client config is measured on it.
-        fallbackFrame: 141,
-        scrubbed: true,
+        // A clear medium shot of the laptop, for the reduced-motion still. The
+        // true last frame is nearly solid black (the dolly runs past the
+        // screen plane), which reads as nothing when it is all there is.
+        fallbackFrame: 210,
       },
     ];
 

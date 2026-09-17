@@ -32,30 +32,16 @@ export interface ClientHero {
   titleRevealAt: number;
 }
 
-/** Rectangle of the laptop screen in the final journey frame, in % of the frame. */
-export interface JourneyScreenRect {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
 export interface ClientJourney {
-  /**
-   * The walkthrough. Scrubbed by scroll rather than played, so it is encoded
-   * all-intra — see `scripts/build-client-media.ts`.
-   */
+  /** The walkthrough. Its own first frame matches the hero film's last frame,
+   *  so swapping from one to the other mid-scroll is seamless. Scrubbed by
+   *  scroll via `scrolly-video` (WebCodecs where supported, playbackRate
+   *  modulation otherwise), so it ships at its source quality — see
+   *  `scripts/build-client-media.ts`. */
   videoSrc: string;
   posterImage: string;
   fallbackImage: string;
-  /** width / height of the footage, so the screen overlay stays in register. */
-  frameAspectRatio: number;
   scrollHeightVh: number;
-  screenRect: JourneyScreenRect;
-  zoomStartProgress: number;
-  zoomScale: number;
-  /** Where inside the zoom the screen content fades in (0-1). */
-  previewFadeStart?: number;
   headline: string;
   subheadline: string;
 }

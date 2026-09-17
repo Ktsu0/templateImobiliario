@@ -24,28 +24,21 @@ export const clientConfig = {
     videoSrc: "/clients/meridiano/hero.mp4",
     posterImage: "/clients/meridiano/hero-poster.webp",
     fallbackImage: "/clients/meridiano/hero-fallback.webp",
-    // O filme tem 5,9s: 0.75 põe o nome no ar por volta dos 4,4s, ou seja
-    // no último segundo e meio, depois que a câmera já assentou no imóvel.
-    titleRevealAt: 0.75,
+    // O filme (CasaFora) tem 10s: a câmera entra pela porta e assenta na
+    // sala por volta dos 7-8s. 0.8 põe o nome no ar nos últimos 2s, quando
+    // o quadro já está parado — e é o mesmo quadro em que o CasaDentro
+    // começa, então a jornada continua sem corte.
+    titleRevealAt: 0.8,
   },
   journey: {
     videoSrc: "/clients/meridiano/journey.mp4",
     posterImage: "/clients/meridiano/journey-poster.webp",
     fallbackImage: "/clients/meridiano/journey-fallback.webp",
-    frameAspectRatio: 1366 / 768,
+    // Quanto de scroll o caminhar pela casa ocupa antes de soltar a seção e
+    // revelar os imóveis logo abaixo.
     scrollHeightVh: 320,
-    // Medido no último frame (ver README): a tela preta ocupa
-    // x 32,5% / y 22,1% / 41,3% × 41,7%. Aqui vai levemente para dentro,
-    // para o conteúdo ficar no vidro e não sobre o bezel.
-    screenRect: { x: 34, y: 24, width: 38, height: 37 },
-    zoomStartProgress: 0.7,
-    // 3.0 leva a tela do notebook a cobrir a viewport com uma folga pequena.
-    // A tela é posicionada por layout, fora da camada que escala, então ela
-    // continua nítida em qualquer fator — o limite aqui é de enquadramento.
-    zoomScale: 3,
-    previewFadeStart: 0.2,
     headline: "Da sala de estar ao seu próximo endereço",
-    subheadline: "Percorra o imóvel sem sair daqui — e encontre o seu na tela.",
+    subheadline: "Percorra o imóvel sem sair daqui.",
   },
   contact: {
     whatsapp: "5541999999999",
